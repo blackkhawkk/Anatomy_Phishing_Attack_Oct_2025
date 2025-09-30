@@ -1,0 +1,2816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomy of Phishing Attacks - Cybersecurity Awareness Month</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        
+        :root {
+            --primary-bg: linear-gradient(135deg, #0a0e27 0%, #1a1d3a 35%, #2d1b69 100%);
+            --accent-primary: #00d4ff;
+            --accent-secondary: #ff6b35;
+            --accent-warning: #ff4757;
+            --accent-success: #5c7cfa;
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #94a3b8;
+            --surface-1: rgba(255, 255, 255, 0.03);
+            --surface-2: rgba(255, 255, 255, 0.08);
+            --surface-3: rgba(255, 255, 255, 0.12);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+            --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.35);
+            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.5);
+            --border-radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            font-weight: 400;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(92, 124, 250, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide {
+            display: none;
+            padding: clamp(20px, 4vh, 60px) clamp(20px, 5vw, 80px);
+            width: 100vw;
+            height: 100vh;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+            transition: var(--transition);
+            overflow-y: auto;
+            box-sizing: border-box;
+            z-index: 1;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            animation: slideEnter 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes slideEnter {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+                filter: blur(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .slide h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: clamp(20px, 3vh, 40px);
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-success) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            position: relative;
+        }
+
+        .slide h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 2px;
+            opacity: 0.7;
+        }
+
+        .slide h2 {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: clamp(16px, 2.5vh, 32px);
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .slide h3 {
+            font-size: clamp(1.4rem, 3vw, 2.2rem);
+            font-weight: 600;
+            margin-bottom: clamp(12px, 2vh, 24px);
+            color: var(--accent-primary);
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+        }
+
+        .slide h4 {
+            font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+            font-weight: 600;
+            margin-bottom: clamp(8px, 1.5vh, 16px);
+            color: var(--accent-secondary);
+            letter-spacing: 0;
+            line-height: 1.4;
+        }
+
+        .slide p, .slide li {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-weight: 400;
+            line-height: 1.6;
+            margin-bottom: clamp(8px, 1.5vh, 16px);
+            max-width: min(90vw, 1000px);
+            color: var(--text-secondary);
+            letter-spacing: 0.01em;
+        }
+
+        .slide ul {
+            text-align: left;
+            max-width: min(85vw, 900px);
+            margin: clamp(16px, 3vh, 32px) auto;
+        }
+
+        .slide li {
+            margin-bottom: clamp(6px, 1.2vh, 12px);
+            padding-left: 40px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .slide li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6em;
+            width: 6px;
+            height: 6px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+        }
+
+        .slide li:hover {
+            color: var(--text-primary);
+            transform: translateX(8px);
+        }
+
+        .slide li:hover::before {
+            background: var(--accent-secondary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+            transform: scale(1.5);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(255, 71, 87, 0.05) 100%);
+            border: 2px solid rgba(255, 71, 87, 0.3);
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 48px);
+            margin: clamp(16px, 3vh, 32px) auto;
+            max-width: min(85vw, 900px);
+            width: 100%;
+            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .warning-box::before {
+            content: '⚠️';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 212, 255, 0.05) 100%);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 48px);
+            margin: clamp(16px, 3vh, 32px) auto;
+            max-width: min(85vw, 900px);
+            width: 100%;
+            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-box::before {
+            content: 'ℹ️';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .demo-box {
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1) 0%, rgba(255, 107, 53, 0.05) 100%);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 48px);
+            margin: clamp(16px, 3vh, 32px) auto;
+            max-width: min(85vw, 900px);
+            width: 100%;
+            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-box::before {
+            content: '🎯';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .phishing-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(400px, 90vw), 1fr));
+            gap: clamp(20px, 3vw, 40px);
+            margin: clamp(24px, 4vh, 48px) auto;
+            max-width: min(95vw, 1200px);
+            width: 100%;
+        }
+
+        .fake-site, .real-site {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            color: #1a202c;
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 3vh, 32px);
+            box-shadow: var(--shadow-lg);
+            min-height: 300px;
+            width: 100%;
+            position: relative;
+            backdrop-filter: blur(20px);
+            transition: var(--transition);
+        }
+
+        .fake-site {
+            border: 2px solid var(--accent-warning);
+            background: linear-gradient(135deg, rgba(255, 245, 245, 0.95) 0%, rgba(255, 245, 245, 0.9) 100%);
+        }
+
+        .fake-site::before {
+            content: '🚫 FAKE';
+            position: absolute;
+            top: -10px;
+            right: 16px;
+            background: var(--accent-warning);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .real-site {
+            border: 2px solid var(--accent-success);
+            background: linear-gradient(135deg, rgba(240, 255, 254, 0.95) 0%, rgba(240, 255, 254, 0.9) 100%);
+        }
+
+        .real-site::before {
+            content: '✓ REAL';
+            position: absolute;
+            top: -10px;
+            right: 16px;
+            background: var(--accent-success);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .fake-site h4, .real-site h4 {
+            font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid currentColor;
+        }
+
+        .fake-site h4 {
+            color: var(--accent-warning);
+        }
+
+        .real-site h4 {
+            color: var(--accent-success);
+        }
+
+        .fake-site p, .fake-site li, .real-site p, .real-site li {
+            color: #2d3748;
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .url-bar {
+            background: #e2e8f0;
+            padding: 15px;
+            border-radius: 25px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            border: 2px solid #cbd5e0;
+            font-weight: 600;
+        }
+
+        .fake-url { 
+            color: #c53030; 
+            font-weight: bold;
+            background: #fed7d7;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+        
+        .real-url { 
+            color: #0d9488; 
+            font-weight: bold;
+            background: #a7f3d0;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 90vw), 1fr));
+            gap: clamp(16px, 3vw, 24px);
+            margin: clamp(24px, 4vh, 48px) auto;
+            max-width: min(95vw, 1200px);
+            width: 100%;
+        }
+
+        .stat-card {
+            background: var(--surface-2);
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 3vh, 32px);
+            text-align: center;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            color: var(--text-primary);
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            background: var(--surface-3);
+        }
+
+        .stat-number {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-card p {
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .anatomy-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(320px, 90vw), 1fr));
+            gap: clamp(16px, 3vw, 24px);
+            margin: clamp(24px, 4vh, 48px) auto;
+            max-width: min(95vw, 1400px);
+            width: 100%;
+        }
+
+        .step-card {
+            background: var(--surface-2);
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 3vh, 32px);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            color: var(--text-primary);
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: attr(data-step);
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .step-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            background: var(--surface-3);
+        }
+
+        .step-card h4 {
+            margin-bottom: 16px;
+            padding-right: 50px;
+        }
+
+        .step-card:hover {
+            border-color: #4ecdc4;
+            transform: translateY(-8px) rotateY(5deg);
+            box-shadow: 0 15px 35px rgba(78, 205, 196, 0.3);
+        }
+
+        .step-number {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            font-size: 1.2em;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: clamp(20px, 4vh, 40px);
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+            background: var(--surface-3);
+            padding: 12px 20px;
+            border-radius: 50px;
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-btn {
+            background: var(--surface-2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            font-weight: 600;
+            transition: var(--transition);
+            backdrop-filter: blur(20px);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-primary);
+            color: var(--primary-bg);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-btn:disabled {
+            background: var(--surface-1);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: clamp(20px, 4vh, 40px);
+            right: clamp(20px, 4vw, 40px);
+            background: var(--surface-3);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            font-weight: 600;
+            z-index: 1000;
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-md);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .cyber-month-badge {
+            position: absolute;
+            top: clamp(20px, 4vh, 40px);
+            left: clamp(20px, 4vw, 40px);
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+            color: white;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 100;
+        }
+
+        .live-indicator {
+            position: absolute;
+            bottom: clamp(20px, 4vh, 40px);
+            left: clamp(20px, 4vw, 40px);
+            background: var(--accent-warning);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+            animation: livePulse 2s infinite;
+            box-shadow: var(--shadow-md);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-indicator::before {
+            content: '●';
+            animation: liveDot 1s infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { 
+                box-shadow: var(--shadow-md), 0 0 20px rgba(255, 71, 87, 0.5);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: var(--shadow-lg), 0 0 30px rgba(255, 71, 87, 0.8);
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes liveDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes livePulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .email-mockup {
+            background: linear-gradient(135deg, rgba(248, 249, 250, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 3vh, 32px);
+            margin: clamp(16px, 3vh, 32px) auto;
+            max-width: min(90vw, 800px);
+            width: 100%;
+            color: #1a202c;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(20px);
+            position: relative;
+        }
+
+        .email-mockup::before {
+            content: '📧';
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .email-mockup p {
+            color: #2d3748;
+            margin-bottom: clamp(6px, 1.2vh, 12px);
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            line-height: 1.6;
+        }
+
+        .email-mockup strong {
+            color: #1a202c;
+            font-weight: 700;
+        }
+
+        .email-mockup hr {
+            border: none;
+            border-top: 2px solid rgba(226, 232, 240, 0.5);
+            margin: clamp(8px, 1.5vh, 16px) 0;
+        }
+
+        .protection-tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 90vw), 1fr));
+            gap: clamp(16px, 3vw, 24px);
+            margin: clamp(24px, 4vh, 48px) auto;
+            max-width: min(95vw, 1400px);
+            width: 100%;
+        }
+
+        .tip-card {
+            background: var(--surface-2);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: clamp(20px, 3vh, 32px);
+            text-align: center;
+            transition: var(--transition);
+            color: var(--text-primary);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tip-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-success));
+        }
+
+        .tip-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            background: var(--surface-3);
+            border-color: var(--accent-primary);
+        }
+
+        .tip-card h4 {
+            color: #4ecdc4;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .tip-card p, .tip-card li {
+            color: #ffffff;
+            font-size: 1.1em;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(78, 205, 196, 0.3);
+        }
+
+        .tip-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        /* Form elements in mockups */
+        .fake-site input, .real-site input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 1em;
+            background: #ffffff;
+            color: #1a202c;
+        }
+
+        .fake-site button, .real-site button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .fake-site button {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .real-site button {
+            background: #4ecdc4;
+            color: white;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .presenter-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .social-links a {
+            color: #4ecdc4;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px 15px;
+            border: 2px solid #4ecdc4;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #4ecdc4;
+            color: white;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title Slide -->
+    <div class="slide active">
+        <div class="cyber-month-badge">Cybersecurity Awareness Month 2025</div>
+        <div class="live-indicator">🔴 LIVE</div>
+        <h1>ANATOMY OF PHISHING ATTACKS</h1>
+        <h2>Stay Safe Online</h2>
+        <div class="info-box">
+            <p>🎯 <strong>Live Session</strong></p>
+            <p>🛡️ Interactive Demonstrations & Real-World Examples</p>
+            <p>📚 Practical Defense Strategies</p>
+        </div>
+        <div class="presenter-info">
+            <h3>🎤 Your Presenter</h3>
+            <p><strong>Tanmay Bhattacharjee</strong> AKA <strong>Blackhawk</strong></p>
+            <p>🔒 Product Security Engineer at R360 Group</p>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/tanmaybhattacharjee" target="_blank">💼 LinkedIn</a>
+                <a href="https://x.com/blackk_hawkkk" target="_blank">🐦 Twitter</a>
+            </div>
+            <p style="font-size: 1em; margin-top: 15px;">October 2025 - Cybersecurity Awareness Month</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Welcome & Agenda -->
+    <div class="slide">
+        <h2>Welcome to Our One-Hour Live Session! 👋</h2>
+        <div class="info-box">
+            <h3>Today's Comprehensive Agenda (60 minutes)</h3>
+            <ul>
+                <li>🎯 Understanding Phishing: The Basics (10 min)</li>
+                <li>🔍 Anatomy of a Phishing Attack (10 min)</li>
+                <li>🌍 Real-World Attack Scenarios & Examples (15 min)</li>
+                <li>🚨 Live Demonstrations (Safe Environment) (10 min)</li>
+                <li>🛡️ Comprehensive Protection Strategies (10 min)</li>
+                <li>📋 Incident Response & Compliance (5 min)</li>
+                <li>❓ Q&A Session (10 min)</li>
+            </ul>
+        </div>
+        <div class="demo-box">
+            <p><strong>💬 Interactive Session:</strong> Ask questions anytime!</p>
+            <p><strong>📊 Polls & Scenarios:</strong> Participate in real-time exercises!</p>
+        </div>
+    </div>
+
+    <!-- Slide 3: Phishing Statistics -->
+    <div class="slide">
+        <h2>The Phishing Threat Landscape 📊</h2>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-number">83%</div>
+                <p>of organizations experienced phishing attacks in 2024</p>
+                <p style="font-size: 0.9em; color: #4ecdc4;"><strong>Source:</strong> Proofpoint State of the Phish 2024</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$4.9M</div>
+                <p>Average cost of a data breach from phishing</p>
+                <p style="font-size: 0.9em; color: #4ecdc4;"><strong>Source:</strong> IBM Cost of a Data Breach Report 2024</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">90%</div>
+                <p>of successful cyber attacks start with phishing</p>
+                <p style="font-size: 0.9em; color: #4ecdc4;"><strong>Source:</strong> Verizon Data Breach Investigations Report 2024</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1 in 4</div>
+                <p>people fall for phishing attempts</p>
+                <p style="font-size: 0.9em; color: #4ecdc4;"><strong>Source:</strong> KnowBe4 Phishing by Industry Report 2024</p>
+            </div>
+        </div>
+        <div class="warning-box">
+            <p><strong>⚠️ Reality Check:</strong> Phishing is the #1 cyber threat today!</p>
+        </div>
+    </div>
+
+    <!-- Slide 4: What is Phishing? -->
+    <div class="slide">
+        <h2>What is Phishing? 🎣</h2>
+        <div class="warning-box">
+            <h3>🎯 Critical Terminology</h3>
+            <p><strong>Phishing is a subset of Social Engineering</strong> - the psychological manipulation of people to perform actions or divulge confidential information.</p>
+        </div>
+        <div class="info-box">
+            <h3>Professional Definition</h3>
+            <p>Phishing is a <strong>social engineering attack vector</strong> where cybercriminals impersonate trusted entities through digital communications to steal sensitive information such as credentials, financial data, or personally identifiable information (PII).</p>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Deception</h4>
+                <p>Attackers create fraudulent communications mimicking legitimate sources</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Trust Exploitation</h4>
+                <p>They impersonate trusted entities: banks, employers, service providers</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Information Harvesting</h4>
+                <p>Victims are manipulated into divulging sensitive data or credentials</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Types of Phishing -->
+    <div class="slide">
+        <h2>Types of Phishing Attacks 🎭</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>📧 Email Phishing</h4>
+                <p>Mass emails sent to thousands targeting general information</p>
+            </div>
+            <div class="step-card">
+                <h4>🎯 Spear Phishing</h4>
+                <p>Targeted attacks on specific individuals or organizations</p>
+            </div>
+            <div class="step-card">
+                <h4>🐋 Whaling</h4>
+                <p>High-value targets like CEOs and executives</p>
+            </div>
+            <div class="step-card">
+                <h4>📱 Smishing</h4>
+                <p>Phishing via SMS text messages</p>
+            </div>
+            <div class="step-card">
+                <h4>📞 Vishing</h4>
+                <p>Voice phishing through phone calls</p>
+            </div>
+            <div class="step-card">
+                <h4>🌐 Pharming</h4>
+                <p>Redirecting users to fake websites</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Anatomy Step 1 -->
+    <div class="slide">
+        <h2>Anatomy of a Phishing Attack</h2>
+        <h3>Step 1: Reconnaissance & Target Selection 🔍</h3>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>Information Gathering</h4>
+                <ul>
+                    <li>Social media profiling</li>
+                    <li>Company websites</li>
+                    <li>Public databases</li>
+                    <li>LinkedIn profiles</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>Target Identification</h4>
+                <ul>
+                    <li>High-value individuals</li>
+                    <li>Vulnerable employees</li>
+                    <li>Access to sensitive systems</li>
+                    <li>Financial authority</li>
+                </ul>
+            </div>
+        </div>
+        <div class="warning-box">
+            <p><strong>💡 Key Insight:</strong> Attackers spend significant time researching their targets to make attacks more convincing!</p>
+        </div>
+    </div>
+
+    <!-- Slide 7: Anatomy Step 2 -->
+    <div class="slide">
+        <h2>Step 2: Crafting the Bait 🎣</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>Email Creation</h4>
+                <ul>
+                    <li>Spoofed sender addresses</li>
+                    <li>Company logos & branding</li>
+                    <li>Urgent language</li>
+                    <li>Official-looking templates</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>Psychological Triggers</h4>
+                <ul>
+                    <li>Fear & urgency</li>
+                    <li>Authority figures</li>
+                    <li>Curiosity & rewards</li>
+                    <li>Social validation</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>Technical Elements</h4>
+                <ul>
+                    <li>Malicious links</li>
+                    <li>Fake websites</li>
+                    <li>Malware attachments</li>
+                    <li>Form collection pages</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Demo Preparation -->
+    <div class="slide">
+        <h2>🚨 LIVE DEMONSTRATION TIME!</h2>
+        <div class="demo-box">
+            <h3>⚠️ Safe Demonstration Environment ⚠️</h3>
+            <p>We'll now examine REAL phishing emails in a controlled, safe environment.</p>
+            <p><strong>Remember:</strong> Never click suspicious links in real life!</p>
+        </div>
+        <div class="info-box">
+            <h4>What We'll Analyze:</h4>
+            <ul>
+                <li>🔍 Email headers and sender information</li>
+                <li>🎭 Social engineering techniques</li>
+                <li>⚠️ Red flags and warning signs</li>
+                <li>🌐 Fake websites and forms</li>
+                <li>📱 Mobile phishing examples</li>
+            </ul>
+        </div>
+        <p><strong>💬 Ask questions as we go!</strong></p>
+    </div>
+
+    <!-- Slide 9: Example Phishing Email -->
+    <div class="slide">
+        <h2>Example: Banking Phishing Email</h2>
+        <div class="email-mockup">
+            <p><strong>From:</strong> security@bank-alerts.com (⚠️ Suspicious domain)</p>
+            <p><strong>Subject:</strong> URGENT: Your Account Will Be Suspended</p>
+            <hr style="margin: 10px 0;">
+            <p>Dear Valued Customer,</p>
+            <p>We have detected <span style="color: red;">suspicious activity</span> on your account. Your account will be <strong>SUSPENDED</strong> within 24 hours unless you verify your information immediately.</p>
+            <p><strong>Click here to verify now:</strong> <a href="#" style="color: blue;">www.secure-bank-verification.com</a> (⚠️ Fake URL)</p>
+            <p>Failure to act will result in permanent account closure.</p>
+            <p>Customer Security Team<br>YourBank</p>
+        </div>
+        <div class="warning-box">
+            <p><strong>🚩 Red Flags:</strong> Urgency, threats, suspicious domain, generic greeting, poor grammar</p>
+        </div>
+    </div>
+
+    <!-- Slide 10: Anatomy Step 3 -->
+    <div class="slide">
+        <h2>Step 3: The Hook - Victim Interaction 🪝</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>Initial Contact</h4>
+                <ul>
+                    <li>Email delivery</li>
+                    <li>SMS message</li>
+                    <li>Phone call</li>
+                    <li>Social media message</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>Victim Response</h4>
+                <ul>
+                    <li>Clicks malicious link</li>
+                    <li>Downloads attachment</li>
+                    <li>Provides information</li>
+                    <li>Calls fake number</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>Data Collection</h4>
+                <ul>
+                    <li>Login credentials</li>
+                    <li>Credit card details</li>
+                    <li>Personal information</li>
+                    <li>System access</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: Anatomy Step 4 -->
+    <div class="slide">
+        <h2>Step 4: Exploitation & Impact 💥</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>Immediate Actions</h4>
+                <ul>
+                    <li>Account takeover</li>
+                    <li>Financial theft</li>
+                    <li>Identity theft</li>
+                    <li>System infiltration</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>Secondary Attacks</h4>
+                <ul>
+                    <li>Lateral movement</li>
+                    <li>Data exfiltration</li>
+                    <li>Ransomware deployment</li>
+                    <li>Further phishing</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>Long-term Damage</h4>
+                <ul>
+                    <li>Financial losses</li>
+                    <li>Reputation damage</li>
+                    <li>Legal consequences</li>
+                    <li>Regulatory fines</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Red Flags -->
+    <div class="slide">
+        <h2>🚩 How to Spot Phishing: Red Flags</h2>
+        <div class="protection-tips">
+            <div class="tip-card">
+                <div class="tip-icon">📧</div>
+                <h4>Sender Issues</h4>
+                <ul>
+                    <li>Unfamiliar sender</li>
+                    <li>Mismatched domains</li>
+                    <li>Generic greetings</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">⚡</div>
+                <h4>Urgency & Threats</h4>
+                <ul>
+                    <li>"Act immediately"</li>
+                    <li>"Account suspended"</li>
+                    <li>"Limited time offer"</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🔗</div>
+                <h4>Suspicious Links</h4>
+                <ul>
+                    <li>Shortened URLs</li>
+                    <li>Misspelled domains</li>
+                    <li>HTTP instead of HTTPS</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">📎</div>
+                <h4>Attachments</h4>
+                <ul>
+                    <li>Unexpected files</li>
+                    <li>Executable files</li>
+                    <li>Compressed archives</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 13: Protection Strategies -->
+    <div class="slide">
+        <h2>🛡️ Protection Strategies</h2>
+        <div class="protection-tips">
+            <div class="tip-card">
+                <div class="tip-icon">🔍</div>
+                <h4>Verify Before Trust</h4>
+                <ul>
+                    <li>Check sender addresses</li>
+                    <li>Hover over links</li>
+                    <li>Call to confirm</li>
+                    <li>Visit sites directly</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🔐</div>
+                <h4>Technical Defenses</h4>
+                <ul>
+                    <li>Use 2FA/MFA</li>
+                    <li>Keep software updated</li>
+                    <li>Use email filters</li>
+                    <li>Install antivirus</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🧠</div>
+                <h4>Stay Informed</h4>
+                <ul>
+                    <li>Security training</li>
+                    <li>Threat intelligence</li>
+                    <li>Company policies</li>
+                    <li>Report incidents</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🚨</div>
+                <h4>Incident Response</h4>
+                <ul>
+                    <li>Disconnect devices</li>
+                    <li>Change passwords</li>
+                    <li>Report to IT/Security</li>
+                    <li>Monitor accounts</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 14: The Human Firewall -->
+    <div class="slide">
+        <h2>You Are the Human Firewall! 🧱</h2>
+        <div class="info-box">
+            <h3>Remember: Technology + Human Awareness = Strong Defense</h3>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🤔 Think</h4>
+                <p>Is this email/message expected? Does it make sense?</p>
+            </div>
+            <div class="step-card">
+                <h4>⏸️ Pause</h4>
+                <p>Don't rush. Take time to analyze before acting.</p>
+            </div>
+            <div class="step-card">
+                <h4>✅ Verify</h4>
+                <p>Confirm through alternative channels before responding.</p>
+            </div>
+        </div>
+        <div class="warning-box">
+            <p><strong>Golden Rule:</strong> When in doubt, DON'T click, DON'T respond, and ASK for help!</p>
+        </div>
+    </div>
+
+    <!-- Slide 15: Q&A Session -->
+    <div class="slide">
+        <h2>❓ Interactive Q&A Session</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>💬 Your Questions Welcome!</h4>
+                <p>Ask your questions about:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>🎣 Specific phishing attack scenarios</li>
+                    <li>🛡️ Protection strategies for your industry</li>
+                    <li>🏢 Organizational security programs</li>
+                    <li>📱 Mobile security concerns</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🔧 Technical Questions</h4>
+                <ul style="font-size: 0.9em;">
+                    <li>Security tools and implementation</li>
+                    <li>Training program development</li>
+                    <li>Compliance and regulatory questions</li>
+                    <li>Future threats and AI-powered attacks</li>
+                </ul>
+            </div>
+        </div>
+        <div class="info-box">
+            <h3>🗳️ Quick Polls</h3>
+            <p><strong>Share your experiences!</strong></p>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <p>Have you been targeted by phishing?</p>
+                </div>
+                <div class="stat-card">
+                    <p>What's most concerning in your industry?</p>
+                </div>
+                <div class="stat-card">
+                    <p>Does your organization have security training?</p>
+                </div>
+                <div class="stat-card">
+                    <p>What's your biggest cybersecurity challenge?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 16: Resources -->
+    <div class="slide">
+        <h2>📚 Additional Resources</h2>
+        <div class="protection-tips">
+            <div class="tip-card">
+                <h4>🏛️ Government Resources</h4>
+                <ul>
+                    <li>CISA Cybersecurity Tips</li>
+                    <li>FBI IC3 Reporting</li>
+                    <li>FTC Consumer Alerts</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <h4>🎓 Training Platforms</h4>
+                <ul>
+                    <li>KnowBe4 Security Training</li>
+                    <li>SANS Security Awareness</li>
+                    <li>Proofpoint Security Education</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <h4>🔧 Security Tools</h4>
+                <ul>
+                    <li>Email security gateways</li>
+                    <li>Password managers</li>
+                    <li>2FA applications</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <h4>📱 Mobile Apps</h4>
+                <ul>
+                    <li>Phishing detection apps</li>
+                    <li>Secure browsers</li>
+                    <li>VPN services</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 17: Call to Action -->
+    <div class="slide">
+        <h2>Take Action Today! 🚀</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Subscribe & Share</h4>
+                <p>Subscribe to this channel and share with colleagues</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Implement Training</h4>
+                <p>Start security awareness programs at your organization</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Practice Vigilance</h4>
+                <p>Apply what you learned in your daily digital activities</p>
+            </div>
+        </div>
+        <div class="info-box">
+            <h3>🎯 Cybersecurity Awareness Month Challenge</h3>
+            <p>Help us spread awareness! Share one phishing tip on social media using #CyberAware2025</p>
+        </div>
+    </div>
+
+    <!-- Slide 18: Real-World Phishing Scenarios -->
+    <div class="slide">
+        <h2>🌍 Real-World Phishing Scenarios</h2>
+        <div class="info-box">
+            <h3>Case Studies from 2024-2025</h3>
+            <p>Let's examine actual phishing campaigns that have targeted organizations and individuals</p>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🏢 Business Email Compromise</h4>
+                <p>CEO impersonation leading to wire fraud</p>
+            </div>
+            <div class="step-card">
+                <h4>🎓 Educational Institution Attack</h4>
+                <p>Student credential harvesting campaign</p>
+            </div>
+            <div class="step-card">
+                <h4>🏥 Healthcare Data Breach</h4>
+                <p>COVID-19 themed attacks on hospitals</p>
+            </div>
+            <div class="step-card">
+                <h4>💰 Cryptocurrency Scams</h4>
+                <p>Fake exchange and wallet phishing</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 19: Business Email Compromise (BEC) Example -->
+    <div class="slide">
+        <h2>📧 Business Email Compromise (BEC) Attack</h2>
+        <div class="email-mockup">
+            <p><strong>From:</strong> ceo.john.smith@company-urgent.com (⚠️ Look-alike domain)</p>
+            <p><strong>Subject:</strong> URGENT - Confidential Wire Transfer Required</p>
+            <hr style="margin: 10px 0;">
+            <p>Hi Sarah,</p>
+            <p>I'm currently in meetings with potential investors and need you to process an urgent wire transfer for the acquisition deal we discussed.</p>
+            <p><strong>Amount:</strong> $150,000<br>
+            <strong>Recipient:</strong> Global Investment Partners LLC<br>
+            <strong>Account:</strong> [Bank details provided]</p>
+            <p>This is time-sensitive. Please process immediately and confirm.</p>
+            <p>Thanks,<br>John Smith<br>CEO</p>
+        </div>
+        <div class="warning-box">
+            <p><strong>🚩 Red Flags:</strong> Urgency, external pressure, unusual requests, slight domain misspelling</p>
+        </div>
+    </div>
+
+    <!-- Slide 20: Social Media Phishing -->
+    <div class="slide">
+        <h2>📱 Social Media Phishing Attack</h2>
+        <div class="demo-box">
+            <h3>LinkedIn Connection Request Scam</h3>
+            <div class="email-mockup" style="max-width: 900px; background: #ffffff; border: 3px solid #0077b5;">
+                <div style="background: #0077b5; color: white; padding: 15px; margin: -30px -30px 20px -30px; border-radius: 12px 12px 0 0;">
+                    <h4 style="margin: 0; color: white; border: none; font-size: 1.2em;">💼 LinkedIn Professional Network</h4>
+                </div>
+                <p><strong>From:</strong> Sarah Johnson (Recruiter at TechCorp)</p>
+                <p><strong>Subject:</strong> Exciting Security Consulting Opportunity</p>
+                <hr style="border-top: 2px solid #e2e8f0; margin: 15px 0;">
+                <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border-left: 4px solid #0077b5; margin: 15px 0;">
+                    <p style="margin: 0; color: #2d3748; font-size: 1.1em; line-height: 1.6;">
+                        <strong>Hi there!</strong><br><br>
+                        I saw your impressive cybersecurity background on LinkedIn and was truly impressed by your expertise. 
+                        I work for a major Fortune 500 technology company and we have an <span style="color: #e53e3e; font-weight: bold;">urgent security consulting opportunity</span> 
+                        that would be perfect for someone with your skills.<br><br>
+                        <strong>This is highly confidential</strong> and time-sensitive. Can you click this link to review the 
+                        project details and compensation package?
+                    </p>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <a href="#" style="background: #0077b5; color: white; padding: 12px 25px; text-decoration: none; border-radius: 25px; font-weight: bold;">View Confidential Details ➡️</a>
+                    </div>
+                    <p style="font-size: 0.9em; color: #4a5568; margin: 10px 0 0 0;">
+                        Link: bit.ly/urgent-consulting-offer-2025
+                    </p>
+                </div>
+                <p><strong>Best regards,</strong><br>Sarah Johnson<br>Senior Technical Recruiter</p>
+            </div>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>⚠️ Warning Signs</h4>
+                <ul>
+                    <li>Flattery and ego appeal</li>
+                    <li>Urgency and exclusivity claims</li>
+                    <li>Shortened/suspicious URLs</li>
+                    <li>Request for immediate action</li>
+                    <li>Vague company references</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🎯 Target Psychology</h4>
+                <ul>
+                    <li>Professional curiosity</li>
+                    <li>Career advancement desire</li>
+                    <li>FOMO (Fear of Missing Out)</li>
+                    <li>Trust in professional networks</li>
+                    <li>Financial motivation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 21: Cryptocurrency Phishing -->
+    <div class="slide">
+        <h2>₿ Cryptocurrency Phishing Examples</h2>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-number">$4.6B</div>
+                <p>Lost to crypto scams in 2023</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">46%</div>
+                <p>Increase in crypto phishing</p>
+            </div>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🎭 Fake Exchange Login</h4>
+                <ul>
+                    <li>Coinbase/Binance lookalikes</li>
+                    <li>Urgent "security alerts"</li>
+                    <li>Account verification required</li>
+                    <li>Limited time offers</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>💸 Investment Scams</h4>
+                <ul>
+                    <li>"Guaranteed returns" promises</li>
+                    <li>Celebrity endorsements (fake)</li>
+                    <li>Social media advertising</li>
+                    <li>Pump and dump schemes</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🔐 Wallet Draining</h4>
+                <ul>
+                    <li>Malicious dApp connections</li>
+                    <li>Seed phrase harvesting</li>
+                    <li>Fake security updates</li>
+                    <li>Discord/Telegram scams</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 22: Healthcare Phishing -->
+    <div class="slide">
+        <h2>🏥 Healthcare Sector Phishing</h2>
+        <div class="email-mockup">
+            <p><strong>From:</strong> admin@health-portal-secure.com</p>
+            <p><strong>Subject:</strong> Action Required: Update Your Patient Portal Access</p>
+            <hr style="margin: 10px 0;">
+            <p>Dear Healthcare Provider,</p>
+            <p>Due to recent HIPAA compliance updates, you must verify your patient portal credentials within 48 hours to maintain access to patient records.</p>
+            <p><strong>Click here to update:</strong> <a href="#" style="color: blue;">https://secure-health-verification.com/login</a></p>
+            <p>Failure to comply will result in temporary suspension of your access privileges.</p>
+            <p>IT Security Team<br>Medical Center</p>
+        </div>
+        <div class="warning-box">
+            <p><strong>💡 Why Healthcare is Targeted:</strong> High-value data, time pressure, life-critical systems, stressed professionals</p>
+        </div>
+    </div>
+
+    <!-- Slide 23: Educational Institution Phishing -->
+    <div class="slide">
+        <h2>🎓 Educational Institution Attacks</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>📚 Student Targeting</h4>
+                <ul>
+                    <li>Fake scholarship offers</li>
+                    <li>Grade portal "updates"</li>
+                    <li>Financial aid scams</li>
+                    <li>Student loan forgiveness</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>👨‍🏫 Faculty Targeting</h4>
+                <ul>
+                    <li>Conference invitations</li>
+                    <li>Research collaboration</li>
+                    <li>Journal submission scams</li>
+                    <li>IT system updates</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🏫 Administrative Staff</h4>
+                <ul>
+                    <li>Vendor invoice fraud</li>
+                    <li>Payroll system alerts</li>
+                    <li>Student record requests</li>
+                    <li>Emergency communications</li>
+                </ul>
+            </div>
+        </div>
+        <div class="demo-box">
+            <h4>Example: Fake Scholarship Email</h4>
+            <p>"Congratulations! You've been selected for the $50,000 Emergency Student Relief Fund. Click here to claim your award before the deadline..."</p>
+        </div>
+    </div>
+
+    <!-- Slide 24: Mobile Phishing (Smishing) -->
+    <div class="slide">
+        <h2>📱 Mobile Phishing (Smishing) Examples</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>📲 Banking SMS</h4>
+                <div style="background: #e8f5e8; color: black; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                    <p><strong>Alert:</strong> Unusual activity detected on your account ending in 1234. Verify now: bit.ly/bank-verify or your account will be locked.</p>
+                </div>
+            </div>
+            <div class="step-card">
+                <h4>📦 Package Delivery</h4>
+                <div style="background: #e8f5e8; color: black; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                    <p><strong>FedEx:</strong> Package delivery failed. Reschedule: fedex-redelivery.com/track?id=ABC123</p>
+                </div>
+            </div>
+            <div class="step-card">
+                <h4>💳 Credit Card Alert</h4>
+                <div style="background: #e8f5e8; color: black; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                    <p><strong>Visa Alert:</strong> $500 charge at Target declined. Confirm if this was you: visa-security.net/confirm</p>
+                </div>
+            </div>
+        </div>
+        <div class="warning-box">
+            <p><strong>Mobile-Specific Risks:</strong> Smaller screens hide URL details, touch interfaces enable quick clicking, people check messages anywhere</p>
+        </div>
+    </div>
+
+    <!-- Slide 25: Voice Phishing (Vishing) -->
+    <div class="slide">
+        <h2>📞 Voice Phishing (Vishing) Scenarios</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🏛️ IRS/Tax Scam</h4>
+                <ul>
+                    <li>"You owe back taxes"</li>
+                    <li>"Pay immediately or face arrest"</li>
+                    <li>Demands gift cards/wire transfer</li>
+                    <li>Threatens legal action</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🛡️ Tech Support Scam</h4>
+                <ul>
+                    <li>"Your computer is infected"</li>
+                    <li>Requests remote access</li>
+                    <li>Claims to be from Microsoft/Apple</li>
+                    <li>Creates fake problems to "fix"</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>💳 Bank Verification</h4>
+                <ul>
+                    <li>"Suspicious activity detected"</li>
+                    <li>Requests account details</li>
+                    <li>Asks for PIN/passwords</li>
+                    <li>Creates false urgency</li>
+                </ul>
+            </div>
+        </div>
+        <div class="info-box">
+            <h4>🔊 Audio Cues to Watch For:</h4>
+            <p>Background noise, accent inconsistencies, high-pressure tactics, refusal to call back at official numbers</p>
+        </div>
+    </div>
+
+    <!-- Slide 26: Advanced Persistent Phishing -->
+    <div class="slide">
+        <h2>🎯 Advanced Persistent Phishing</h2>
+        <div class="warning-box">
+            <h3>Multi-Stage Attack Campaign</h3>
+            <p>Sophisticated attackers use multiple touchpoints over weeks or months</p>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Reconnaissance Phase</h4>
+                <ul>
+                    <li>Social media monitoring</li>
+                    <li>Company research</li>
+                    <li>Employee identification</li>
+                    <li>Technology stack analysis</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Trust Building</h4>
+                <ul>
+                    <li>LinkedIn connections</li>
+                    <li>Industry event mentions</li>
+                    <li>Helpful information sharing</li>
+                    <li>Professional conversations</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>The Hook</h4>
+                <ul>
+                    <li>Personalized attack</li>
+                    <li>Leveraged trust</li>
+                    <li>Specific company context</li>
+                    <li>Convincing pretext</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 27: Industry-Specific Attacks -->
+    <div class="slide">
+        <h2>🏭 Industry-Specific Phishing Attacks</h2>
+        <div class="protection-tips">
+            <div class="tip-card">
+                <div class="tip-icon">🏦</div>
+                <h4>Financial Services</h4>
+                <ul>
+                    <li>Regulatory compliance threats</li>
+                    <li>Fake audit notifications</li>
+                    <li>Customer data breaches</li>
+                    <li>Wire transfer requests</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">⚖️</div>
+                <h4>Legal Firms</h4>
+                <ul>
+                    <li>Court document delivery</li>
+                    <li>Client confidentiality breaches</li>
+                    <li>Case file sharing</li>
+                    <li>Electronic discovery</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🏗️</div>
+                <h4>Manufacturing</h4>
+                <ul>
+                    <li>Supply chain disruptions</li>
+                    <li>Equipment maintenance alerts</li>
+                    <li>Safety compliance issues</li>
+                    <li>Vendor communications</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🛒</div>
+                <h4>Retail</h4>
+                <ul>
+                    <li>PCI compliance violations</li>
+                    <li>Customer complaint escalations</li>
+                    <li>Inventory management</li>
+                    <li>Holiday season pressures</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 28: Comprehensive Protection Strategies -->
+    <div class="slide">
+        <h2>🛡️ Comprehensive Protection Framework</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🏢 Organizational Level</h4>
+                <ul>
+                    <li>Security awareness training (monthly)</li>
+                    <li>Phishing simulation exercises</li>
+                    <li>Email security gateways</li>
+                    <li>Multi-factor authentication</li>
+                    <li>Incident response procedures</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🔧 Technical Controls</h4>
+                <ul>
+                    <li>DMARC/SPF/DKIM implementation</li>
+                    <li>URL filtering and sandboxing</li>
+                    <li>Endpoint detection and response</li>
+                    <li>Zero-trust network architecture</li>
+                    <li>Regular security updates</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>👤 Individual Best Practices</h4>
+                <ul>
+                    <li>Verify requests through separate channels</li>
+                    <li>Use password managers</li>
+                    <li>Enable account alerts</li>
+                    <li>Regular security training</li>
+                    <li>Report suspicious activities</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 29: Incident Response Plan -->
+    <div class="slide">
+        <h2>🚨 What to Do When Phished</h2>
+        <div class="warning-box">
+            <h3>⏰ Time is Critical - Act Within Minutes</h3>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h4>Immediate Actions</h4>
+                <ul>
+                    <li>Disconnect from network</li>
+                    <li>Don't click any more links</li>
+                    <li>Take screenshots of evidence</li>
+                    <li>Note time and details</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h4>Damage Assessment</h4>
+                <ul>
+                    <li>Check for unauthorized access</li>
+                    <li>Review recent transactions</li>
+                    <li>Scan for malware</li>
+                    <li>Identify compromised accounts</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h4>Recovery Actions</h4>
+                <ul>
+                    <li>Change all passwords</li>
+                    <li>Contact banks/credit cards</li>
+                    <li>Report to IT security</li>
+                    <li>File reports with authorities</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 30: Training and Awareness Program -->
+    <div class="slide">
+        <h2>🎓 Building a Security-Aware Culture</h2>
+        <div class="info-box">
+            <h3>Year-Round Security Awareness Program</h3>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>📅 Monthly Training Topics</h4>
+                <ul>
+                    <li>January: Password Security</li>
+                    <li>February: Social Engineering</li>
+                    <li>March: Mobile Security</li>
+                    <li>April: Email Security</li>
+                    <li>May: Physical Security</li>
+                    <li>June: Data Protection</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🎯 Simulation Exercises</h4>
+                <ul>
+                    <li>Monthly phishing tests</li>
+                    <li>Vishing simulations</li>
+                    <li>Physical security tests</li>
+                    <li>Social engineering calls</li>
+                    <li>USB drop tests</li>
+                    <li>Tailgating exercises</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🏆 Recognition Program</h4>
+                <ul>
+                    <li>Security champion awards</li>
+                    <li>Phishing reporters recognition</li>
+                    <li>Department competitions</li>
+                    <li>Success story sharing</li>
+                    <li>Continuous improvement</li>
+                    <li>Feedback mechanisms</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 31: Regulatory and Compliance Considerations -->
+    <div class="slide">
+        <h2>⚖️ Regulatory Requirements & Compliance</h2>
+        <div class="protection-tips">
+            <div class="tip-card">
+                <h4>🏛️ Government Regulations</h4>
+                <ul>
+                    <li>GDPR (EU)</li>
+                    <li>CCPA (California)</li>
+                    <li>HIPAA (Healthcare)</li>
+                    <li>SOX (Financial)</li>
+                    <li>FERPA (Education)</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <h4>🏭 Industry Standards</h4>
+                <ul>
+                    <li>ISO 27001</li>
+                    <li>NIST Cybersecurity Framework</li>
+                    <li>PCI DSS</li>
+                    <li>COBIT</li>
+                    <li>CIS Controls</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <h4>📋 Reporting Requirements</h4>
+                <ul>
+                    <li>Data breach notifications</li>
+                    <li>Incident reporting timelines</li>
+                    <li>Customer notifications</li>
+                    <li>Regulatory filings</li>
+                    <li>Insurance claims</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <h4>💰 Financial Impact</h4>
+                <ul>
+                    <li>Regulatory fines</li>
+                    <li>Legal costs</li>
+                    <li>Remediation expenses</li>
+                    <li>Business disruption</li>
+                    <li>Reputation damage</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 32: Future of Phishing & Emerging Threats -->
+    <div class="slide">
+        <h2>🔮 Future Threats & Emerging Trends</h2>
+        <div class="warning-box">
+            <h3>🤖 AI-Powered Phishing is Here</h3>
+            <p>Artificial Intelligence is making phishing attacks more sophisticated and harder to detect</p>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🤖 AI & Machine Learning</h4>
+                <ul>
+                    <li>Deepfake voice calls</li>
+                    <li>AI-generated phishing emails</li>
+                    <li>Personalized attack automation</li>
+                    <li>Real-time adaptation</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🌐 New Attack Vectors</h4>
+                <ul>
+                    <li>IoT device exploitation</li>
+                    <li>Smart home targeting</li>
+                    <li>AR/VR phishing</li>
+                    <li>Cloud service abuse</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🛡️ Defense Evolution</h4>
+                <ul>
+                    <li>AI-powered detection</li>
+                    <li>Behavioral analytics</li>
+                    <li>Zero-trust architecture</li>
+                    <li>Continuous authentication</li>
+                </ul>
+            </div>
+        </div>
+        <div class="info-box">
+            <p><strong>Stay Ahead:</strong> Continuous learning, threat intelligence sharing, adaptive security measures</p>
+        </div>
+    </div>
+
+    <!-- Slide 33: Microsoft Login Comparison -->
+    <div class="slide">
+        <h2>🎭 Real vs Fake: Microsoft Login Pages</h2>
+        <div class="phishing-comparison">
+            <div class="fake-site">
+                <h4>🚨 FAKE MICROSOFT LOGIN</h4>
+                <div class="url-bar">
+                    <span class="fake-url">https://microsft-login-secure.com/auth</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <img style="width: 30px; height: 30px;" alt="MS Logo"> 
+                    <strong>Microsft</strong> (Notice the typo!)
+                    <hr style="margin: 10px 0;">
+                    <input type="text" placeholder="Email or phone" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc;">
+                    <input type="password" placeholder="Password" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc;">
+                    <button style="background: #0078d4; color: white; padding: 10px 20px; border: none; margin: 10px 0;">Sign in</button>
+                </div>
+                <p style="color: #ff6b6b; font-weight: bold;">RED FLAGS:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Misspelled domain name</li>
+                    <li>Non-Microsoft URL structure</li>
+                    <li>Typo in company name</li>
+                    <li>Poor form styling</li>
+                </ul>
+            </div>
+            <div class="real-site">
+                <h4>✅ LEGITIMATE MICROSOFT LOGIN</h4>
+                <div class="url-bar">
+                    <span class="real-url">https://login.microsoftonline.com/</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <img style="width: 30px; height: 30px;" alt="MS Logo"> 
+                    <strong>Microsoft</strong>
+                    <hr style="margin: 10px 0;">
+                    <input type="text" placeholder="Email, phone, or Skype" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #0078d4;">
+                    <button style="background: #0078d4; color: white; padding: 12px 24px; border: none; margin: 10px 0; border-radius: 2px;">Next</button>
+                </div>
+                <p style="color: #4ecdc4; font-weight: bold;">LEGITIMATE SIGNS:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Official Microsoft domain</li>
+                    <li>Correct URL structure</li>
+                    <li>Professional styling</li>
+                    <li>HTTPS security</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 34: Google Login Comparison -->
+    <div class="slide">
+        <h2>🎭 Real vs Fake: Google Login Pages</h2>
+        <div class="phishing-comparison">
+            <div class="fake-site">
+                <h4>🚨 FAKE GOOGLE LOGIN</h4>
+                <div class="url-bar">
+                    <span class="fake-url">https://google-accounts-verification.net/signin</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <span style="color: #4285f4; font-size: 24px; font-weight: bold;">Gοοgle</span> (Notice the different 'o' characters!)
+                    <hr style="margin: 15px 0;">
+                    <p>Sign in to your account</p>
+                    <input type="text" placeholder="Email or username" style="width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc;">
+                    <input type="password" placeholder="Enter your password" style="width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc;">
+                    <button style="background: #1a73e8; color: white; padding: 10px 20px; border: none;">Sign In</button>
+                </div>
+                <p style="color: #ff6b6b; font-weight: bold;">RED FLAGS:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Suspicious domain name</li>
+                    <li>Unicode character spoofing</li>
+                    <li>Poor design quality</li>
+                    <li>Missing Google branding</li>
+                </ul>
+            </div>
+            <div class="real-site">
+                <h4>✅ LEGITIMATE GOOGLE LOGIN</h4>
+                <div class="url-bar">
+                    <span class="real-url">https://accounts.google.com/signin</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <span style="color: #4285f4; font-size: 24px; font-weight: bold;">Google</span>
+                    <hr style="margin: 15px 0;">
+                    <p>Sign in</p>
+                    <p style="font-size: 0.9em;">Use your Google Account</p>
+                    <input type="text" placeholder="Email or phone" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 4px;">
+                    <button style="background: #1a73e8; color: white; padding: 12px 24px; border: none; border-radius: 4px;">Next</button>
+                </div>
+                <p style="color: #4ecdc4; font-weight: bold;">LEGITIMATE SIGNS:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Official Google domain</li>
+                    <li>Consistent branding</li>
+                    <li>Professional UI design</li>
+                    <li>Secure HTTPS connection</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 35: Amazon Login Comparison -->
+    <div class="slide">
+        <h2>🎭 Real vs Fake: Amazon Login Pages</h2>
+        <div class="phishing-comparison">
+            <div class="fake-site">
+                <h4>🚨 FAKE AMAZON LOGIN</h4>
+                <div class="url-bar">
+                    <span class="fake-url">https://amazon-security-check.org/ap/signin</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <h3 style="color: #ff9900;">amazon</h3>
+                    <hr style="margin: 10px 0;">
+                    <p><strong>Account Verification Required</strong></p>
+                    <p style="color: red;">Your account has been temporarily suspended. Please verify your information.</p>
+                    <input type="text" placeholder="Email address" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc;">
+                    <input type="password" placeholder="Password" style="width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ccc;">
+                    <button style="background: #ff9900; color: white; padding: 10px 20px; border: none;">Verify Account</button>
+                </div>
+                <p style="color: #ff6b6b; font-weight: bold;">RED FLAGS:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Non-Amazon domain</li>
+                    <li>Urgent verification request</li>
+                    <li>Account suspension threat</li>
+                    <li>Poor branding quality</li>
+                </ul>
+            </div>
+            <div class="real-site">
+                <h4>✅ LEGITIMATE AMAZON LOGIN</h4>
+                <div class="url-bar">
+                    <span class="real-url">https://www.amazon.com/ap/signin</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <h3 style="color: #ff9900;">amazon</h3>
+                    <hr style="margin: 10px 0;">
+                    <p><strong>Sign in</strong></p>
+                    <input type="text" placeholder="Email or mobile phone number" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #a6a6a6; border-radius: 3px;">
+                    <input type="password" placeholder="Password" style="width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #a6a6a6; border-radius: 3px;">
+                    <button style="background: #ff9900; color: white; padding: 10px 24px; border: none; border-radius: 3px;">Sign in</button>
+                </div>
+                <p style="color: #4ecdc4; font-weight: bold;">LEGITIMATE SIGNS:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Official Amazon domain</li>
+                    <li>Consistent branding</li>
+                    <li>No pressure tactics</li>
+                    <li>Professional design</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 36: Banking Phishing Example -->
+    <div class="slide">
+        <h2>🏦 Banking Phishing: Chase Bank Example</h2>
+        <div class="phishing-comparison">
+            <div class="fake-site">
+                <h4>🚨 FAKE CHASE BANK</h4>
+                <div class="url-bar">
+                    <span class="fake-url">https://chase-bank-security.net/banking</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <h3 style="color: #117aca;">CHASE</h3>
+                    <div style="background: #ffebee; padding: 10px; margin: 10px 0; border-left: 4px solid #f44336;">
+                        <strong>URGENT SECURITY ALERT</strong><br>
+                        Suspicious activity detected on your account.<br>
+                        <span style="color: red;">Account will be locked in 24 hours!</span>
+                    </div>
+                    <input type="text" placeholder="Username" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    <input type="password" placeholder="Password" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    <input type="text" placeholder="SSN (Last 4 digits)" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    <button style="background: #117aca; color: white; padding: 10px 20px;">Verify Now</button>
+                </div>
+                <p style="color: #ff6b6b; font-weight: bold;">RED FLAGS:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Non-Chase domain</li>
+                    <li>Urgent threat language</li>
+                    <li>Requests SSN information</li>
+                    <li>Poor security practices</li>
+                </ul>
+            </div>
+            <div class="real-site">
+                <h4>✅ LEGITIMATE CHASE BANK</h4>
+                <div class="url-bar">
+                    <span class="real-url">https://secure01a.chase.com/web/auth/</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <h3 style="color: #117aca;">CHASE</h3>
+                    <p>Sign in to Chase Online</p>
+                    <input type="text" placeholder="Username" style="width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="password" placeholder="Password" style="width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px;">
+                    <button style="background: #117aca; color: white; padding: 12px 24px; border: none; border-radius: 4px;">Sign in</button>
+                    <p style="font-size: 0.8em; margin-top: 10px;">🔒 Your information is encrypted and secure</p>
+                </div>
+                <p style="color: #4ecdc4; font-weight: bold;">LEGITIMATE SIGNS:</p>
+                <ul style="font-size: 0.9em;">
+                    <li>Official Chase subdomain</li>
+                    <li>No pressure tactics</li>
+                    <li>Professional design</li>
+                    <li>Security indicators</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 37: PayPal Phishing Scenario -->
+    <div class="slide">
+        <h2>💳 PayPal Phishing Attack Analysis</h2>
+        <div class="email-mockup">
+            <p><strong>From:</strong> service@paypal-security.org</p>
+            <p><strong>Subject:</strong> Action Required: Verify Your PayPal Account</p>
+            <hr style="margin: 10px 0;">
+            <div style="text-align: center; margin: 15px 0;">
+                <span style="color: #0070ba; font-size: 24px; font-weight: bold;">PayPal</span>
+            </div>
+            <p>Dear PayPal User,</p>
+            <p>We have noticed some <span style="color: red; font-weight: bold;">unusual activity</span> on your PayPal account. To protect your account, we have temporarily <strong>limited access</strong> to your account.</p>
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <p style="color: #856404; margin: 0;"><strong>⚠️ Account Status:</strong> Limited Access</p>
+                <p style="color: #856404; margin: 5px 0 0 0;"><strong>Time Remaining:</strong> 24 hours</p>
+            </div>
+            <p>To restore full access to your account, please click the button below to verify your information:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <button style="background: #0070ba; color: white; padding: 15px 30px; border: none; border-radius: 25px; font-size: 16px; cursor: pointer;">Verify Account Now</button>
+            </div>
+            <p>If you do not verify your account within 24 hours, your account will be permanently suspended.</p>
+            <p>Thank you,<br>PayPal Security Team</p>
+        </div>
+        <div class="warning-box">
+            <p><strong>🚩 Critical Red Flags:</strong></p>
+            <ul>
+                <li>Suspicious sender domain (.org instead of .com)</li>
+                <li>Generic greeting ("Dear PayPal User")</li>
+                <li>Creates false urgency (24-hour deadline)</li>
+                <li>Threatens account suspension</li>
+                <li>Vague "unusual activity" claim</li>
+                <li>Suspicious button without visible URL</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 38: Netflix Phishing Example -->
+    <div class="slide">
+        <h2>🎬 Netflix Subscription Scam</h2>
+        <div class="email-mockup">
+            <p><strong>From:</strong> billing@netflix-billing.com</p>
+            <p><strong>Subject:</strong> Your Netflix subscription will be cancelled</p>
+            <hr style="margin: 10px 0;">
+            <div style="text-align: center; margin: 15px 0;">
+                <span style="color: #e50914; font-size: 28px; font-weight: bold;">NETFLIX</span>
+            </div>
+            <p>Hi there,</p>
+            <p>We were unable to process your payment for your Netflix subscription. Your account will be cancelled in <strong style="color: red;">3 days</strong> unless you update your payment information.</p>
+            <div style="background: #d32f2f; color: white; padding: 15px; margin: 15px 0; border-radius: 5px; text-align: center;">
+                <p style="margin: 0; font-weight: bold;">⚠️ PAYMENT FAILED</p>
+                <p style="margin: 5px 0 0 0;">Update payment method to continue watching</p>
+            </div>
+            <p>To update your payment information and prevent service interruption:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <button style="background: #e50914; color: white; padding: 15px 30px; border: none; border-radius: 4px; font-size: 16px;">Update Payment Method</button>
+            </div>
+            <p>If you recently updated your payment information, please disregard this email.</p>
+            <p>The Netflix Team</p>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🎯 Psychological Tactics</h4>
+                <ul>
+                    <li>Fear of service loss</li>
+                    <li>Time pressure (3 days)</li>
+                    <li>Disruption to entertainment</li>
+                    <li>Familiar branding</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🔍 How to Verify</h4>
+                <ul>
+                    <li>Check official Netflix domain</li>
+                    <li>Log in directly to Netflix</li>
+                    <li>Check payment method in account</li>
+                    <li>Look for Netflix emails in your account</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 39: iPhone/Apple Phishing -->
+    <div class="slide">
+        <h2>📱 Apple ID Phishing Attack</h2>
+        <div class="email-mockup">
+            <p><strong>From:</strong> noreply@apple-security.net</p>
+            <p><strong>Subject:</strong> Your Apple ID has been disabled</p>
+            <hr style="margin: 10px 0;">
+            <div style="text-align: center; margin: 15px 0;">
+                <span style="font-size: 24px;">🍎 Apple</span>
+            </div>
+            <p>Dear Apple Customer,</p>
+            <p>Your Apple ID <strong>tanmay.example@email.com</strong> has been disabled due to suspicious sign-in attempts from an unrecognized device.</p>
+            <div style="background: #f44336; color: white; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <p style="margin: 0; font-weight: bold;">🔒 SECURITY ALERT</p>
+                <p style="margin: 5px 0 0 0;">Unusual activity detected from: [Unknown Location]</p>
+            </div>
+            <p><strong>Device Details:</strong></p>
+            <ul>
+                <li>Device: Unknown Windows PC</li>
+                <li>Location: Russia</li>
+                <li>Time: Today at 3:42 AM</li>
+            </ul>
+            <p>To secure your account and restore access, please verify your identity:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <button style="background: #007aff; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px;">Verify Apple ID</button>
+            </div>
+            <p>If this was not you, your account may be compromised.</p>
+            <p>Apple Support</p>
+        </div>
+        <div class="warning-box">
+            <p><strong>🔍 Detection Tips:</strong> Real Apple emails come from @apple.com, use your actual name, and never ask for passwords via email. Always log in directly through official apps/websites.</p>
+        </div>
+    </div>
+
+    <!-- Slide 40: COVID-19 Themed Phishing -->
+    <div class="slide">
+        <h2>🦠 COVID-19 Themed Phishing (Still Active!)</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>💉 Vaccine Registration Scams</h4>
+                <ul>
+                    <li>Fake vaccination appointment sites</li>
+                    <li>Premium vaccine access offers</li>
+                    <li>Insurance verification requests</li>
+                    <li>Health record harvesting</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>💰 Financial Relief Fraud</h4>
+                <ul>
+                    <li>Fake government stimulus checks</li>
+                    <li>Unemployment benefit scams</li>
+                    <li>Small business loan fraud</li>
+                    <li>Tax refund phishing</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🏥 Healthcare Phishing</h4>
+                <ul>
+                    <li>Fake test result notifications</li>
+                    <li>Medical supply scams</li>
+                    <li>Contact tracing fraud</li>
+                    <li>Telemedicine impersonation</li>
+                </ul>
+            </div>
+        </div>
+        <div class="email-mockup">
+            <p><strong>From:</strong> covid-testing@health-dept.org</p>
+            <p><strong>Subject:</strong> COVID-19 Test Results Available</p>
+            <hr>
+            <p>Your COVID-19 test results are ready. Click here to view your results securely: <a href="#" style="color: blue;">health-results-portal.com/view</a></p>
+            <p>Reference: COV-2025-8842</p>
+        </div>
+        <div class="warning-box">
+            <p><strong>⚠️ Always verify:</strong> Contact your healthcare provider directly. Official health departments use .gov domains, not .org or .com!</p>
+        </div>
+    </div>
+
+    <!-- Slide 41: Social Media Phishing -->
+    <div class="slide">
+        <h2>📘 Social Media Phishing Attacks</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>📘 Facebook Phishing</h4>
+                <ul>
+                    <li>"You have memories to look back on"</li>
+                    <li>Fake friend requests from cloned accounts</li>
+                    <li>"Someone tagged you in a video"</li>
+                    <li>Business page verification scams</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>📸 Instagram Scams</h4>
+                <ul>
+                    <li>"Your account will be deleted"</li>
+                    <li>Fake verification badge offers</li>
+                    <li>"Copyright violation" notices</li>
+                    <li>Influencer collaboration fraud</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>💼 LinkedIn Targeting</h4>
+                <ul>
+                    <li>Fake job opportunities</li>
+                    <li>"Profile viewed by recruiter"</li>
+                    <li>Premium account upgrades</li>
+                    <li>Connection request phishing</li>
+                </ul>
+            </div>
+        </div>
+        <div class="demo-box">
+            <h4>Real Example: Facebook "Security Check"</h4>
+            <div style="background: #1877f2; color: white; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <p style="margin: 0; font-weight: bold;">facebook</p>
+            </div>
+            <p style="color: black; background: white; padding: 15px; border-radius: 8px;">Hi, we noticed unusual activity on your Facebook account. Please confirm your identity to continue using Facebook. Failure to verify will result in permanent account suspension.</p>
+            <button style="background: #1877f2; color: white; padding: 10px 20px; border: none; border-radius: 6px;">Verify Account</button>
+        </div>
+    </div>
+
+    <!-- Slide 42: Romance Scams & Dating App Phishing -->
+    <div class="slide">
+        <h2>💕 Romance Scams & Dating App Phishing</h2>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-number">$1.3B</div>
+                <p>Lost to romance scams in 2022</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">70%</div>
+                <p>of romance scam victims are women 50+</p>
+            </div>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🎭 Common Personas</h4>
+                <ul>
+                    <li>Military personnel overseas</li>
+                    <li>Successful businessperson traveling</li>
+                    <li>Widowed with children</li>
+                    <li>Oil rig worker/doctor abroad</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>💔 Red Flags</h4>
+                <ul>
+                    <li>Professes love very quickly</li>
+                    <li>Avoids phone/video calls</li>
+                    <li>Stories don't add up</li>
+                    <li>Asks for money/gifts</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>💰 Common Requests</h4>
+                <ul>
+                    <li>"Emergency" medical bills</li>
+                    <li>Travel money to visit you</li>
+                    <li>Investment opportunities</li>
+                    <li>Help with customs/legal fees</li>
+                </ul>
+            </div>
+        </div>
+        <div class="warning-box">
+            <p><strong>🛡️ Protection:</strong> Never send money to someone you've only met online. Use reverse image search on profile photos. Be wary of perfect grammar from someone claiming to be from a non-English speaking country.</p>
+        </div>
+    </div>
+
+    <!-- Slide 43: Cryptocurrency Exchange Phishing -->
+    <div class="slide">
+        <h2>₿ Cryptocurrency Exchange Phishing</h2>
+        <div class="phishing-comparison">
+            <div class="fake-site">
+                <h4>🚨 FAKE COINBASE</h4>
+                <div class="url-bar">
+                    <span class="fake-url">https://coinbase-pro-security.com/signin</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <h3 style="color: #0052ff;">Coinbase</h3>
+                    <div style="background: #ff4757; color: white; padding: 10px; margin: 10px 0; border-radius: 4px;">
+                        <strong>🚨 SECURITY ALERT</strong><br>
+                        Suspicious withdrawal attempt detected!<br>
+                        Verify account immediately to prevent theft.
+                    </div>
+                    <input type="text" placeholder="Email" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    <input type="password" placeholder="Password" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    <input type="text" placeholder="2FA Code" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    <button style="background: #0052ff; color: white; padding: 10px 20px;">Secure Account</button>
+                </div>
+            </div>
+            <div class="real-site">
+                <h4>✅ REAL COINBASE</h4>
+                <div class="url-bar">
+                    <span class="real-url">https://www.coinbase.com/signin</span>
+                </div>
+                <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0;">
+                    <h3 style="color: #0052ff;">Coinbase</h3>
+                    <p>Sign in to Coinbase</p>
+                    <input type="text" placeholder="Email" style="width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #d4d4d4; border-radius: 4px;">
+                    <input type="password" placeholder="Password" style="width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #d4d4d4; border-radius: 4px;">
+                    <button style="background: #0052ff; color: white; padding: 12px 24px; border: none; border-radius: 4px;">Sign in</button>
+                    <p style="font-size: 0.8em; margin-top: 10px;">🔒 Your funds are FDIC insured up to $250k</p>
+                </div>
+            </div>
+        </div>
+        <div class="warning-box">
+            <p><strong>🔐 Crypto Security Tips:</strong> Enable hardware 2FA, use official apps only, bookmark legitimate URLs, never share private keys, and be extra cautious with any "urgent" security messages.</p>
+        </div>
+    </div>
+
+    <!-- Slide 44: Tax Season Phishing -->
+    <div class="slide">
+        <h2>💸 Tax Season Phishing Attacks</h2>
+        <div class="email-mockup">
+            <p><strong>From:</strong> irs-refund@tax-services.gov-verify.com</p>
+            <p><strong>Subject:</strong> IRS REFUND NOTIFICATION - $2,847 Approved</p>
+            <hr style="margin: 10px 0;">
+            <div style="text-align: center; margin: 15px 0;">
+                <strong style="font-size: 20px;">Internal Revenue Service</strong><br>
+                <span style="font-size: 14px;">United States Government</span>
+            </div>
+            <p>Dear Taxpayer,</p>
+            <p>After reviewing your tax return, we have determined that you are eligible for a <strong style="color: green;">$2,847.00 tax refund</strong>.</p>
+            <div style="background: #e8f5e8; border: 1px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 5px;">
+                <p style="margin: 0; color: #2e7d32;"><strong>✅ REFUND APPROVED</strong></p>
+                <p style="margin: 5px 0 0 0; color: #2e7d32;">Amount: $2,847.00</p>
+                <p style="margin: 5px 0 0 0; color: #2e7d32;">Processing Time: 2-3 business days</p>
+            </div>
+            <p>To process your refund, we need to verify your banking information. Please click below to access the secure verification portal:</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <button style="background: #1976d2; color: white; padding: 15px 30px; border: none; border-radius: 4px; font-size: 16px;">Claim Refund Now</button>
+            </div>
+            <p><strong>Important:</strong> You have 72 hours to claim your refund or it will be forfeited.</p>
+            <p>Internal Revenue Service<br>Taxpayer Services Division</p>
+        </div>
+        <div class="warning-box">
+            <p><strong>🚨 IRS Facts:</strong> The IRS never initiates contact via email, text, or social media. They communicate through postal mail. They never ask for verification of personal/financial information via email!</p>
+        </div>
+    </div>
+
+    <!-- Slide 45: Supply Chain & Vendor Phishing -->
+    <div class="slide">
+        <h2>🚛 Supply Chain & Vendor Phishing</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>📦 Package Delivery Scams</h4>
+                <ul>
+                    <li>FedEx/UPS delivery failures</li>
+                    <li>Amazon package notifications</li>
+                    <li>Customs/duties payment requests</li>
+                    <li>USPS redelivery scams</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🏢 B2B Vendor Impersonation</h4>
+                <ul>
+                    <li>Invoice payment redirections</li>
+                    <li>Purchase order confirmations</li>
+                    <li>Contract renegotiation emails</li>
+                    <li>Vendor portal updates</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>💼 Office Supply Scams</h4>
+                <ul>
+                    <li>Toner/printer supply invoices</li>
+                    <li>Software license renewals</li>
+                    <li>Equipment maintenance contracts</li>
+                    <li>Directory listing updates</li>
+                </ul>
+            </div>
+        </div>
+        <div class="email-mockup">
+            <p><strong>From:</strong> shipping@fedex-delivery.net</p>
+            <p><strong>Subject:</strong> Package Delivery Failure - Action Required</p>
+            <hr>
+            <div style="background: #4a90e2; color: white; padding: 10px; text-align: center;">
+                <strong>FedEx Express</strong>
+            </div>
+            <p>Dear Customer,</p>
+            <p>We attempted to deliver your package but were unable to complete the delivery due to an incomplete address.</p>
+            <p><strong>Tracking Number:</strong> 1234 5678 9012</p>
+            <p><strong>Delivery Fee Required:</strong> $3.95</p>
+            <p>Please click below to pay the delivery fee and reschedule delivery:</p>
+            <button style="background: #4a90e2; color: white; padding: 10px 20px; border: none;">Pay & Reschedule</button>
+        </div>
+    </div>
+
+    <!-- Slide 46: AI-Powered Phishing Threats -->
+    <div class="slide">
+        <h2>🤖 AI-Powered Phishing: The New Frontier</h2>
+        <div class="warning-box">
+            <h3>🚨 The Game Has Changed</h3>
+            <p>Artificial Intelligence is making phishing attacks more sophisticated, personalized, and harder to detect than ever before.</p>
+        </div>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🎭 Deepfake Technology</h4>
+                <ul>
+                    <li>AI-generated voice calls</li>
+                    <li>Fake video messages from "CEOs"</li>
+                    <li>Synthetic profile pictures</li>
+                    <li>Realistic face swapping</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>✍️ AI-Generated Content</h4>
+                <ul>
+                    <li>Perfect grammar and spelling</li>
+                    <li>Context-aware messaging</li>
+                    <li>Personalized content at scale</li>
+                    <li>Multiple language variants</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🧠 Machine Learning Targeting</h4>
+                <ul>
+                    <li>Social media profile analysis</li>
+                    <li>Behavioral pattern recognition</li>
+                    <li>Optimal timing prediction</li>
+                    <li>Success rate optimization</li>
+                </ul>
+            </div>
+        </div>
+        <div class="info-box">
+            <h4>🛡️ AI Defense Strategies:</h4>
+            <ul>
+                <li>Implement AI-powered email filtering</li>
+                <li>Use deepfake detection tools</li>
+                <li>Establish voice verification protocols</li>
+                <li>Regular AI awareness training</li>
+                <li>Multi-channel verification requirements</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 47: IoT & Smart Device Phishing -->
+    <div class="slide">
+        <h2>🏠 IoT & Smart Device Security Threats</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>📱 Smart Home Attacks</h4>
+                <ul>
+                    <li>Fake security camera alerts</li>
+                    <li>Smart doorbell notifications</li>
+                    <li>Thermostat "malfunction" emails</li>
+                    <li>Router firmware update scams</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>⌚ Wearable Device Phishing</h4>
+                <ul>
+                    <li>Fitness app account verification</li>
+                    <li>Health data breach notifications</li>
+                    <li>Smartwatch payment alerts</li>
+                    <li>Sleep tracking "anomalies"</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🚗 Connected Car Scams</h4>
+                <ul>
+                    <li>Vehicle recall notifications</li>
+                    <li>Telematics service renewals</li>
+                    <li>GPS tracking alerts</li>
+                    <li>Insurance monitoring scams</li>
+                </ul>
+            </div>
+        </div>
+        <div class="demo-box">
+            <h4>Example: Smart Security Camera Alert</h4>
+            <div class="email-mockup" style="max-width: 700px; background: #ffffff; border: 3px solid #ff6b6b;">
+                <div style="background: #1a1a1a; color: white; padding: 15px; margin: -30px -30px 20px -30px; border-radius: 12px 12px 0 0; text-align: center;">
+                    <h4 style="margin: 0; color: white; border: none; font-size: 1.2em;">🔔 Ring Security Alert</h4>
+                </div>
+                <div style="background: #fff5f5; padding: 20px; border-radius: 8px; border-left: 4px solid #ff6b6b; margin: 15px 0;">
+                    <p style="margin: 0 0 10px 0; color: #2d3748;"><strong>From:</strong> alerts@ring-security.net 😨</p>
+                    <p style="margin: 0 0 15px 0; color: #2d3748;"><strong>Subject:</strong> 🚨 URGENT: Motion detected at your front door</p>
+                    <hr style="border-top: 2px solid #ff6b6b; margin: 15px 0;">
+                    <div style="background: #fed7d7; padding: 15px; border-radius: 6px; margin: 15px 0; text-align: center;">
+                        <p style="margin: 0; color: #c53030; font-weight: bold; font-size: 1.1em;">🔔 MOTION ALERT: Front Door Camera</p>
+                        <p style="margin: 5px 0; color: #2d3748;">⏰ <strong>Time:</strong> Just now (3:42 AM)</p>
+                        <p style="margin: 5px 0; color: #2d3748;">📍 <strong>Location:</strong> Main Entrance</p>
+                    </div>
+                    <div style="background: #f7fafc; padding: 15px; border-radius: 6px; margin: 15px 0;">
+                        <p style="margin: 0 0 10px 0; color: #2d3748;">Suspicious activity detected at your property. Click below to view live footage and take immediate action:</p>
+                        <div style="text-align: center; margin: 15px 0;">
+                            <a href="#" style="background: #ff6b6b; color: white; padding: 12px 25px; text-decoration: none; border-radius: 25px; font-weight: bold;">📹 View Live Footage Now</a>
+                        </div>
+                        <p style="font-size: 0.9em; color: #4a5568; margin: 10px 0 0 0; text-align: center;">
+                            Link: ring-secure-view.com/live/urgent-alert-8423
+                        </p>
+                    </div>
+                    <p style="margin: 15px 0 0 0; color: #4a5568; font-size: 0.9em;">
+                        Ring Security Team<br>
+                        ⚠️ If this was not you, your property may be at risk.
+                    </p>
+                </div>
+            </div>
+            <div class="warning-box" style="margin-top: 20px;">
+                <p><strong>🚩 Critical Red Flags:</strong></p>
+                <ul>
+                    <li><strong>Suspicious domain:</strong> ring-security.net (Real Ring uses @ring.com)</li>
+                    <li><strong>Urgency tactics:</strong> "URGENT" and time pressure</li>
+                    <li><strong>Fear appeal:</strong> "Suspicious activity" at unusual hours</li>
+                    <li><strong>Action pressure:</strong> "Take immediate action"</li>
+                    <li><strong>Fake URL:</strong> Non-official domain structure</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 48: Advanced Protection Techniques -->
+    <div class="slide">
+        <h2>🛡️ Advanced Protection Framework</h2>
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🔐 Zero Trust Security</h4>
+                <ul>
+                    <li>Verify every user and device</li>
+                    <li>Assume breach mentality</li>
+                    <li>Continuous authentication</li>
+                    <li>Micro-segmentation</li>
+                    <li>Least privilege access</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>🤖 AI-Powered Defense</h4>
+                <ul>
+                    <li>Behavioral analysis engines</li>
+                    <li>Real-time threat detection</li>
+                    <li>Automated response systems</li>
+                    <li>Pattern recognition</li>
+                    <li>Adaptive security policies</li>
+                </ul>
+            </div>
+            <div class="step-card">
+                <h4>📊 Threat Intelligence</h4>
+                <ul>
+                    <li>Global threat feeds</li>
+                    <li>Industry-specific indicators</li>
+                    <li>Dark web monitoring</li>
+                    <li>Attack pattern analysis</li>
+                    <li>Predictive threat modeling</li>
+                </ul>
+            </div>
+        </div>
+        <div class="info-box">
+            <h3>🎯 Implementation Roadmap</h3>
+            <ul>
+                <li><strong>Phase 1:</strong> Deploy advanced email security and user training</li>
+                <li><strong>Phase 2:</strong> Implement multi-factor authentication everywhere</li>
+                <li><strong>Phase 3:</strong> Deploy endpoint detection and response tools</li>
+                <li><strong>Phase 4:</strong> Establish security operations center (SOC)</li>
+                <li><strong>Phase 5:</strong> Integrate AI/ML threat detection capabilities</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 49: Building a Security Culture -->
+    <div class="slide">
+        <h2>🏢 Building a Security-First Culture</h2>
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-number">95%</div>
+                <p>of successful attacks are due to human error</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3.2x</div>
+                <p>more effective when employees report phishing</p>
+            </div>
+        </div>
+        <div class="protection-tips">
+            <div class="tip-card">
+                <div class="tip-icon">🎓</div>
+                <h4>Continuous Education</h4>
+                <ul>
+                    <li>Monthly security newsletters</li>
+                    <li>Interactive training modules</li>
+                    <li>Real-world case studies</li>
+                    <li>Security champions program</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🏆</div>
+                <h4>Positive Reinforcement</h4>
+                <ul>
+                    <li>Reward good security behavior</li>
+                    <li>Celebrate phishing reporters</li>
+                    <li>No-blame incident culture</li>
+                    <li>Security achievement recognition</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">📊</div>
+                <h4>Metrics & Measurement</h4>
+                <ul>
+                    <li>Phishing simulation results</li>
+                    <li>Training completion rates</li>
+                    <li>Incident response times</li>
+                    <li>Security awareness scores</li>
+                </ul>
+            </div>
+            <div class="tip-card">
+                <div class="tip-icon">🔄</div>
+                <h4>Continuous Improvement</h4>
+                <ul>
+                    <li>Regular program assessment</li>
+                    <li>Employee feedback integration</li>
+                    <li>Threat landscape adaptation</li>
+                    <li>Best practice updates</li>
+                </ul>
+            </div>
+        </div>
+        <div class="demo-box">
+            <h3>🚀 Quick Start Actions for Organizations</h3>
+            <ul>
+                <li>✅ Implement email authentication (SPF, DKIM, DMARC)</li>
+                <li>✅ Deploy advanced threat protection</li>
+                <li>✅ Conduct monthly phishing simulations</li>
+                <li>✅ Establish incident response procedures</li>
+                <li>✅ Create security awareness training program</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 50: Thank You -->
+    <div class="slide">
+        <div class="cyber-month-badge">Cybersecurity Awareness Month 2025</div>
+        <h1>Thank You! 🙏</h1>
+        <h2>Stay Safe Online</h2>
+        <div class="presenter-info">
+            <h3>📧 Connect with Tanmay Bhattacharjee (Blackhawk)</h3>
+            <p>� Product Security Engineer at R360 Group</p>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/tanmaybhattacharjee" target="_blank">💼 LinkedIn</a>
+                <a href="https://x.com/blackk_hawkkk" target="_blank">🐦 Twitter</a>
+            </div>
+        </div>
+        <div class="demo-box">
+            <h3>Remember the Golden Rules:</h3>
+            <ul>
+                <li>🤔 Think before you click</li>
+                <li>✅ Verify suspicious communications</li>
+                <li>🛡️ Use multi-factor authentication</li>
+                <li>📚 Keep learning about cybersecurity</li>
+            </ul>
+        </div>
+        <p style="font-size: 1.2em; margin-top: 30px;">
+            <strong>Together, we can build a safer digital world! 🌍🔒</strong>
+        </p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">Previous</button>
+        <button class="nav-btn" onclick="nextSlide()">Next</button>
+    </div>
+
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">50</span>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // Initialize slide counter
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('total-slides').textContent = totalSlides;
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        });
+
+        function showSlide(n) {
+            // Hide current slide
+            slides[currentSlide].classList.remove('active');
+            
+            // Calculate new slide index (wrap around)
+            currentSlide = (n + totalSlides) % totalSlides;
+            
+            // Show new slide
+            slides[currentSlide].classList.add('active');
+            
+            // Update counter
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            }
+        });
+
+        // Touch navigation for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            const touchDiff = touchStartX - touchEndX;
+            
+            if (Math.abs(touchDiff) > 50) {
+                if (touchDiff > 0) {
+                    nextSlide();
+                } else {
+                    previousSlide();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
