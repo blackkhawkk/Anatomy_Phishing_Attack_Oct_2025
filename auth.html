@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Required - Phishing Awareness Session</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1d3a 35%, #2d1b69 100%);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            background: linear-gradient(135deg, #00d4ff 0%, #ff6b35 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        p {
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff6b35 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .error {
+            color: #ff4757;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        .info {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h1>🔐 Secure Access</h1>
+        <p>This cybersecurity presentation requires authorized access. Please enter your credentials to continue.</p>
+        
+        <form id="authForm">
+            <input type="email" id="email" placeholder="Enter your email address" required>
+            <input type="password" id="accessCode" placeholder="Enter access code" required>
+            <button type="submit">Access Presentation</button>
+        </form>
+        
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div class="info">
+            <strong>📧 Need Access?</strong><br>
+            Contact the session organizer to receive your access credentials.
+        </div>
+    </div>
+
+    <script>
+        // Authorized email addresses - you can modify this list
+        const authorizedEmails = [
+            'tanmay.icss@gmail.com',
+            'admin@r360group.com',
+            // Add more authorized emails here
+        ];
+        
+        // Simple access code - you can change this
+        const accessCode = 'CyberAware2025';
+        
+        document.getElementById('authForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.toLowerCase().trim();
+            const code = document.getElementById('accessCode').value;
+            const errorDiv = document.getElementById('error');
+            
+            if (authorizedEmails.includes(email) && code === accessCode) {
+                // Store authentication in session
+                sessionStorage.setItem('authenticated', 'true');
+                sessionStorage.setItem('userEmail', email);
+                
+                // Redirect to presentation
+                window.location.href = 'presentation.html';
+            } else {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Invalid email or access code. Please check your credentials and try again.';
+            }
+        });
+        
+        // Check if already authenticated
+        if (sessionStorage.getItem('authenticated') === 'true') {
+            window.location.href = 'presentation.html';
+        }
+    </script>
+</body>
+</html>
