@@ -515,66 +515,7 @@
             font-size: 1.2em;
         }
 
-        .navigation {
-            position: fixed;
-            bottom: clamp(20px, 4vh, 40px);
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            z-index: 1000;
-            background: var(--surface-3);
-            padding: 12px 20px;
-            border-radius: 50px;
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: var(--shadow-lg);
-        }
 
-        .nav-btn {
-            background: var(--surface-2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            padding: 12px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: clamp(0.9rem, 1.5vw, 1rem);
-            font-weight: 600;
-            transition: var(--transition);
-            backdrop-filter: blur(20px);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .nav-btn:hover {
-            background: var(--accent-primary);
-            color: var(--primary-bg);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .nav-btn:disabled {
-            background: var(--surface-1);
-            color: var(--text-muted);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .slide-counter {
-            position: fixed;
-            top: clamp(20px, 4vh, 40px);
-            right: clamp(20px, 4vw, 40px);
-            background: var(--surface-3);
-            color: var(--text-primary);
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: clamp(0.9rem, 1.5vw, 1rem);
-            font-weight: 600;
-            z-index: 1000;
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: var(--shadow-md);
-            font-family: 'JetBrains Mono', monospace;
-        }
 
         .cyber-month-badge {
             position: absolute;
@@ -2737,26 +2678,12 @@
         </p>
     </div>
 
-    <!-- Navigation -->
-    <div class="navigation">
-        <button class="nav-btn" onclick="previousSlide()">Previous</button>
-        <button class="nav-btn" onclick="nextSlide()">Next</button>
-    </div>
 
-    <div class="slide-counter">
-        <span id="current-slide">1</span> / <span id="total-slides">50</span>
-    </div>
 
     <script>
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
-
-        // Initialize slide counter
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('total-slides').textContent = totalSlides;
-            document.getElementById('current-slide').textContent = currentSlide + 1;
-        });
 
         function showSlide(n) {
             // Hide current slide
@@ -2767,9 +2694,6 @@
             
             // Show new slide
             slides[currentSlide].classList.add('active');
-            
-            // Update counter
-            document.getElementById('current-slide').textContent = currentSlide + 1;
         }
 
         function nextSlide() {
@@ -2782,12 +2706,18 @@
 
         // Keyboard navigation
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowRight' || e.key === ' ') {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
                 e.preventDefault();
                 nextSlide();
-            } else if (e.key === 'ArrowLeft') {
+            } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
                 e.preventDefault();
                 previousSlide();
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                // Exit fullscreen if in fullscreen mode
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
             }
         });
 
@@ -2810,6 +2740,11 @@
                     previousSlide();
                 }
             }
+        });
+
+        // Initialize first slide
+        document.addEventListener('DOMContentLoaded', function() {
+            showSlide(0);
         });
     </script>
 </body>
