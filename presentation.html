@@ -37,6 +37,7 @@
             width: 100%;
             overflow: hidden;
             scroll-behavior: smooth;
+            font-size: 16px;
         }
 
         body {
@@ -53,7 +54,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             position: relative;
-            animation: fadeIn 1s ease-out;
+            font-size: 18px;
         }
         }
 
@@ -73,11 +74,12 @@
 
         .slide {
             display: none;
-            padding: clamp(20px, 4vh, 60px) clamp(20px, 5vw, 80px);
+            padding: 40px;
             width: 100vw;
             height: 100vh;
+            min-height: 100vh;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             text-align: center;
             position: relative;
@@ -88,13 +90,14 @@
             box-sizing: border-box;
             z-index: 1;
             background: transparent;
+            max-width: 100vw;
         }
 
         .slide.active {
             display: flex;
             opacity: 1;
             transform: translateY(0);
-            animation: slideEnter 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            animation: slideEnter 0.6s ease-out forwards;
         }
 
         @keyframes slideEnter {
@@ -111,9 +114,9 @@
         }
 
         .slide h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: clamp(3rem, 7vw, 5rem);
             font-weight: 800;
-            margin-bottom: clamp(20px, 3vh, 40px);
+            margin-bottom: clamp(30px, 4vh, 50px);
             background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 50%, var(--accent-success) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -121,6 +124,8 @@
             letter-spacing: -0.02em;
             line-height: 1.1;
             position: relative;
+            padding-top: 2rem;
+            text-align: center;
         }
 
         .slide h1::after {
@@ -137,12 +142,14 @@
         }
 
         .slide h2 {
-            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
             font-weight: 700;
-            margin-bottom: clamp(16px, 2.5vh, 32px);
+            margin-bottom: clamp(25px, 3vh, 40px);
             color: var(--text-primary);
             letter-spacing: -0.01em;
             line-height: 1.2;
+            text-align: center;
+            padding-top: 1rem;
         }
 
         .slide h3 {
@@ -237,15 +244,17 @@
             background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 212, 255, 0.05) 100%);
             border: 2px solid rgba(0, 212, 255, 0.3);
             border-radius: var(--border-radius);
-            padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 48px);
-            margin: clamp(16px, 3vh, 32px) auto;
-            max-width: min(85vw, 900px);
+            padding: 30px 40px;
+            margin: 30px auto;
+            max-width: min(90vw, 1000px);
             width: 100%;
             box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
             color: var(--text-primary);
             backdrop-filter: blur(20px);
             position: relative;
             overflow: hidden;
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
 
         .info-box::before {
@@ -450,22 +459,24 @@
 
         .anatomy-steps {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(320px, 90vw), 1fr));
-            gap: clamp(16px, 3vw, 24px);
-            margin: clamp(24px, 4vh, 48px) auto;
-            max-width: min(95vw, 1400px);
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px auto;
+            max-width: min(95vw, 1200px);
             width: 100%;
+            padding: 0 20px;
         }
 
         .step-card {
             background: var(--surface-2);
             border-radius: var(--border-radius);
-            padding: clamp(20px, 3vh, 32px);
+            padding: 30px;
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: var(--transition);
-            color: var(--text-primary);
+            font-size: 1rem;
             min-height: 200px;
+            color: var(--text-primary);
             position: relative;
             overflow: hidden;
         }
@@ -799,23 +810,71 @@
         }
 
         /* Responsive design for proper sizing */
-        @media (max-width: 1200px) {
+        @media (max-width: 768px) {
             .slide {
-                padding: clamp(15px, 3vh, 40px) clamp(15px, 4vw, 60px);
+                padding: 20px 15px;
+                height: 100vh;
+                overflow-y: auto;
             }
             
             .slide h1 {
-                font-size: clamp(2rem, 5vw, 3.5rem);
+                font-size: clamp(2.5rem, 8vw, 3.5rem);
+                margin-bottom: 1.5rem;
+                padding-top: 1rem;
             }
             
             .slide h2 {
-                font-size: clamp(1.5rem, 4vw, 2.5rem);
+                font-size: clamp(1.8rem, 6vw, 2.5rem);
+                margin-bottom: 1.5rem;
+            }
+
+            .info-box {
+                padding: 20px;
+                margin: 20px auto;
+                font-size: 1rem;
+            }
+
+            .anatomy-steps {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin: 30px auto;
+                padding: 0 10px;
+            }
+
+            .step-card {
+                padding: 20px;
+                min-height: 150px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1200px) {
+            .slide {
+                padding: 30px 25px;
+            }
+            
+            .slide h1 {
+                font-size: clamp(3rem, 6vw, 4rem);
+            }
+            
+            .slide h2 {
+                font-size: clamp(2rem, 4vw, 3rem);
+            }
+
+            .anatomy-steps {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             }
         }
 
         @media (min-width: 1201px) {
             .slide {
-                padding: clamp(30px, 5vh, 80px) clamp(30px, 6vw, 100px);
+                padding: 50px 60px;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .anatomy-steps {
+                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+                max-width: 1200px;
             }
         }
     </style>
