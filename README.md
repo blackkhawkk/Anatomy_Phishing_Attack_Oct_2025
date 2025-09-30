@@ -9,7 +9,7 @@
 
 ## 🎯 Overview
 
-An interactive, comprehensive 50-slide presentation covering the anatomy of phishing attacks. Designed for cybersecurity awareness training, YouTube live sessions, and professional security education.
+An interactive, comprehensive presentation covering the anatomy of phishing attacks. Designed for cybersecurity awareness training, live sessions, and professional security education.
 
 ## ✨ Features
 
@@ -23,11 +23,11 @@ An interactive, comprehensive 50-slide presentation covering the anatomy of phis
 
 ## 🚀 Live Demo
 
-**[View Live Presentation →](https://tanmoybhattacharjee.github.io/anatomy-phishing-attack/)**
+**[View Live Presentation →](https://blackkhawkk.github.io/Anatomy_Phsihing_Attack_Oct_2025/)**
 
 ## 🎯 Topics Covered
 
-### Core Content (50 Slides)
+### Core Content
 1. **Introduction & Statistics** - Current phishing landscape
 2. **Attack Anatomy** - Step-by-step breakdown of phishing campaigns
 3. **Real vs Fake Examples** - Microsoft, Google, Amazon, PayPal, Netflix comparisons
@@ -47,60 +47,6 @@ An interactive, comprehensive 50-slide presentation covering the anatomy of phis
 - **Mouse/Touch** - Click navigation buttons
 - **Number Keys** - Jump to specific slides
 
-## 🛠️ Technical Features
-
-- **HTML5/CSS3/JavaScript** - Pure web technologies
-- **CSS Grid & Flexbox** - Modern responsive layouts
-- **CSS Custom Properties** - Consistent design system
-- **Intersection Observer** - Smooth scroll animations
-- **Local Storage** - Save presentation progress
-
-## 📋 Usage Instructions
-
-### For Presenters
-1. Open the presentation in fullscreen mode
-2. Use arrow keys or navigation buttons
-3. Each slide is designed for 1-2 minutes presentation time
-4. Total presentation time: ~60 minutes
-5. Interactive elements engage audience participation
-
-### For Self-Study
-1. Navigate at your own pace
-2. Review real vs fake website comparisons carefully
-3. Pay attention to warning boxes and tips
-4. Practice identifying phishing indicators
-
-## 🔧 Local Development
-
-```bash
-# Clone the repository
-git clone https://github.com/tanmoybhattacharjee/anatomy-phishing-attack.git
-
-# Navigate to directory
-cd anatomy-phishing-attack
-
-# Open in browser
-# Simply open index.html in your preferred browser
-```
-
-## 🌐 GitHub Pages Deployment
-
-This presentation is automatically deployed to GitHub Pages. Any changes pushed to the main branch will be reflected in the live demo.
-
-### Manual Deployment
-1. Fork this repository
-2. Go to repository Settings → Pages
-3. Select "Deploy from a branch"
-4. Choose "main" branch and "/ (root)" folder
-5. Your presentation will be available at: `https://yourusername.github.io/anatomy-phishing-attack/`
-
-## 📱 Browser Compatibility
-
-- ✅ Chrome 88+
-- ✅ Firefox 85+
-- ✅ Safari 14+
-- ✅ Edge 88+
-- ✅ Mobile browsers (iOS Safari, Chrome Mobile)
 
 ## 🎓 Educational Use
 
@@ -127,15 +73,6 @@ This presentation is designed for:
 - Links are disabled or point to educational resources
 - Content follows responsible disclosure practices
 
-## 🤝 Contributing
-
-Contributions welcome! Please read our contributing guidelines:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your improvements
-4. Test thoroughly
-5. Submit a pull request
 
 ## 📄 License
 
@@ -147,12 +84,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Product Security Engineer at R360 Group
 - Cybersecurity Expert and Researcher
 - Specialized in threat analysis and security awareness training
-
-## 📞 Contact & Support
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/tanmoybhattacharjee/anatomy-phishing-attack/issues)
-- **Security Questions**: Use GitHub Discussions
-- **Professional Inquiries**: LinkedIn profile
 
 ## 🌟 Star This Repository
 
