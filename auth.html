@@ -251,7 +251,7 @@
                 
                 // Redirect to presentation
                 setTimeout(() => {
-                    window.location.href = 'presentation.html';
+                    window.location.href = 'presentation-clean.html';
                 }, 1000);
             } else {
                 errorDiv.style.display = 'block';
@@ -271,7 +271,7 @@
         
         // Check if already authenticated
         if (sessionStorage.getItem('authenticated') === 'true') {
-            window.location.href = 'presentation.html';
+            window.location.href = 'presentation-clean.html';
         }
         
         // Add shake animation CSS
