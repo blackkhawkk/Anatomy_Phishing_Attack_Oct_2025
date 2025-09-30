@@ -53,6 +53,15 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             position: relative;
+            /* 80% Display Ratio for Optimal Viewing */
+            zoom: 0.8;
+            -moz-transform: scale(0.8);
+            -moz-transform-origin: 0 0;
+            -webkit-transform: scale(0.8);
+            -webkit-transform-origin: 0 0;
+            transform: scale(0.8);
+            transform-origin: 0 0;
+        }
         }
 
         body::before {
@@ -749,6 +758,58 @@
             background: #4ecdc4;
             color: white;
             transform: translateY(-3px);
+        }
+
+        /* Responsive Display Optimization for 80% Zoom */
+        html {
+            zoom: 0.8;
+            -moz-transform: scale(0.8);
+            -moz-transform-origin: 0 0;
+            -webkit-transform: scale(0.8);
+            -webkit-transform-origin: 0 0;
+            transform: scale(0.8);
+            transform-origin: 0 0;
+        }
+
+        /* Ensure slides scale properly */
+        .slide {
+            min-height: 125vh; /* Compensate for 80% zoom */
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        /* Enhanced visibility for slide content */
+        .slide h1, .slide h2, .slide h3 {
+            font-size: calc(1em * 1.25); /* Increase font size to compensate for zoom */
+        }
+
+        /* Better visibility for mockups and important content */
+        .email-mockup, .social-media-post, .info-box, .warning-box, 
+        .anatomy-steps, .step-card, [style*="background"], [style*="border"] {
+            transform: none !important; /* Prevent double scaling */
+        }
+
+        /* Cross-browser compatibility for zoom */
+        @supports not (zoom: 0.8) {
+            body {
+                -moz-transform: scale(0.8);
+                -moz-transform-origin: 0 0;
+                -webkit-transform: scale(0.8);
+                -webkit-transform-origin: 0 0;
+                transform: scale(0.8);
+                transform-origin: 0 0;
+                width: 125vw;
+                height: 125vh;
+            }
+        }
+
+        /* Firefox specific scaling */
+        @-moz-document url-prefix() {
+            body {
+                zoom: normal;
+                -moz-transform: scale(0.8);
+                -moz-transform-origin: 0 0;
+            }
         }
     </style>
 </head>
@@ -2183,36 +2244,166 @@
     <!-- Slide 37: PayPal Phishing Scenario -->
     <div class="slide">
         <h2>💳 PayPal Phishing Attack Analysis</h2>
-        <div class="email-mockup">
-            <p><strong>From:</strong> service@paypal-security.org</p>
-            <p><strong>Subject:</strong> Action Required: Verify Your PayPal Account</p>
-            <hr style="margin: 10px 0;">
-            <div style="text-align: center; margin: 15px 0;">
-                <span style="color: #0070ba; font-size: 24px; font-weight: bold;">PayPal</span>
-            </div>
-            <p>Dear PayPal User,</p>
-            <p>We have noticed some <span style="color: red; font-weight: bold;">unusual activity</span> on your PayPal account. To protect your account, we have temporarily <strong>limited access</strong> to your account.</p>
-            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin: 15px 0; border-radius: 5px;">
-                <p style="color: #856404; margin: 0;"><strong>⚠️ Account Status:</strong> Limited Access</p>
-                <p style="color: #856404; margin: 5px 0 0 0;"><strong>Time Remaining:</strong> 24 hours</p>
-            </div>
-            <p>To restore full access to your account, please click the button below to verify your information:</p>
-            <div style="text-align: center; margin: 20px 0;">
-                <button style="background: #0070ba; color: white; padding: 15px 30px; border: none; border-radius: 25px; font-size: 16px; cursor: pointer;">Verify Account Now</button>
-            </div>
-            <p>If you do not verify your account within 24 hours, your account will be permanently suspended.</p>
-            <p>Thank you,<br>PayPal Security Team</p>
+        <div class="info-box">
+            <h3>🚨 Real PayPal Phishing Email Analysis</h3>
+            <p>This is a detailed breakdown of an actual phishing email targeting PayPal users</p>
         </div>
-        <div class="warning-box">
-            <p><strong>🚩 Critical Red Flags:</strong></p>
-            <ul>
-                <li>Suspicious sender domain (.org instead of .com)</li>
-                <li>Generic greeting ("Dear PayPal User")</li>
-                <li>Creates false urgency (24-hour deadline)</li>
-                <li>Threatens account suspension</li>
-                <li>Vague "unusual activity" claim</li>
-                <li>Suspicious button without visible URL</li>
-            </ul>
+        
+        <!-- PayPal Email Mockup with Cross-Browser Compatibility -->
+        <div style="max-width: 95%; width: 100%; margin: 25px auto; background: #ffffff; border: 3px solid #dc2626; border-radius: 15px; overflow: hidden; box-shadow: 0 15px 35px rgba(220, 38, 38, 0.4); font-family: Arial, sans-serif;">
+            
+            <!-- Email Header -->
+            <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 15px 25px; position: relative;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                    <div>
+                        <h4 style="margin: 0; color: white; font-size: 1.2em;">📧 Phishing Email</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 0.9em; opacity: 0.9;">Fraudulent PayPal Security Alert</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.2); padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">⚠️ MALICIOUS</div>
+                </div>
+            </div>
+            
+            <!-- Email Details -->
+            <div style="background: #f8fafc; padding: 20px 25px; border-bottom: 2px solid #e5e7eb; color: #1f2937;">
+                <div style="display: grid; grid-template-columns: auto 1fr; gap: 10px 15px; font-size: 0.95em;">
+                    <strong style="color: #374151;">From:</strong>
+                    <span style="font-family: 'Courier New', monospace; background: #fee2e2; color: #dc2626; padding: 3px 8px; border-radius: 4px; font-weight: 600;">service@paypal-security.org</span>
+                    
+                    <strong style="color: #374151;">Subject:</strong>
+                    <span style="color: #1f2937; font-weight: 600;">Action Required: Verify Your PayPal Account</span>
+                    
+                    <strong style="color: #374151;">Time:</strong>
+                    <span style="color: #6b7280;">Today, 2:47 PM</span>
+                </div>
+            </div>
+            
+            <!-- Email Content -->
+            <div style="padding: 30px 25px; color: #1f2937; background: #ffffff;">
+                
+                <!-- PayPal Logo Area -->
+                <div style="text-align: center; margin: 0 0 25px 0; padding: 20px; background: #f8fafc; border-radius: 10px; border: 2px solid #e5e7eb;">
+                    <div style="font-size: 32px; font-weight: bold; color: #0070ba; margin-bottom: 5px;">PayPal</div>
+                    <div style="font-size: 0.9em; color: #6b7280;">Security Alert System</div>
+                </div>
+                
+                <!-- Main Message -->
+                <div style="line-height: 1.6; font-size: 16px;">
+                    <p style="margin: 0 0 20px 0; color: #1f2937;">Dear PayPal User,</p>
+                    
+                    <p style="margin: 0 0 20px 0; color: #1f2937;">
+                        We have noticed some <span style="background: #fee2e2; color: #dc2626; padding: 2px 6px; border-radius: 4px; font-weight: bold;">unusual activity</span> 
+                        on your PayPal account. To protect your account, we have temporarily 
+                        <span style="background: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; font-weight: bold;">limited access</span> 
+                        to your account.
+                    </p>
+                    
+                    <!-- Critical Alert Box -->
+                    <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border: 3px solid #dc2626; padding: 20px; margin: 25px 0; border-radius: 12px; box-shadow: 0 8px 25px rgba(220, 38, 38, 0.2);">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div style="font-size: 2em;">⚠️</div>
+                            <div>
+                                <h4 style="margin: 0; color: #991b1b; font-size: 1.2em;">URGENT ACCOUNT STATUS</h4>
+                                <p style="margin: 5px 0 0 0; color: #7f1d1d; font-weight: 600;">Immediate Action Required</p>
+                            </div>
+                        </div>
+                        <div style="background: #ffffff; padding: 15px; border-radius: 8px; border: 2px solid #dc2626;">
+                            <p style="margin: 0 0 10px 0; color: #991b1b; font-weight: bold;">🔒 Account Status: <span style="color: #dc2626;">LIMITED ACCESS</span></p>
+                            <p style="margin: 0; color: #991b1b; font-weight: bold;">⏰ Time Remaining: <span style="color: #dc2626;">24 HOURS</span></p>
+                        </div>
+                    </div>
+                    
+                    <p style="margin: 0 0 25px 0; color: #1f2937;">
+                        To restore full access to your account, please click the button below to verify your information:
+                    </p>
+                    
+                    <!-- Malicious Button -->
+                    <div style="text-align: center; margin: 30px 0;">
+                        <div style="background: linear-gradient(135deg, #0070ba 0%, #005a94 100%); color: white; padding: 18px 40px; border-radius: 25px; font-size: 18px; font-weight: bold; display: inline-block; box-shadow: 0 8px 25px rgba(0, 112, 186, 0.4); cursor: pointer; text-decoration: none;">
+                            🔐 Verify Account Now
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden URL Display -->
+                    <div style="background: #fee2e2; border: 3px solid #dc2626; border-radius: 10px; padding: 15px; margin: 25px 0;">
+                        <p style="margin: 0 0 8px 0; color: #991b1b; font-weight: bold; font-size: 0.9em;">🚨 MALICIOUS LINK DESTINATION:</p>
+                        <p style="margin: 0; font-family: 'Courier New', monospace; color: #dc2626; font-weight: bold; font-size: 0.9em; word-break: break-all; background: #ffffff; padding: 8px; border-radius: 5px;">
+                            https://paypal-security-verification.netlify.app/login?ref=urgent
+                        </p>
+                    </div>
+                    
+                    <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                        <p style="margin: 0; color: #92400e; font-weight: 600; text-align: center;">
+                            ⚠️ If you do not verify your account within 24 hours, your account will be permanently suspended.
+                        </p>
+                    </div>
+                    
+                    <p style="margin: 20px 0 0 0; color: #1f2937;">
+                        Thank you,<br>
+                        <strong>PayPal Security Team</strong><br>
+                        <span style="font-size: 0.9em; color: #6b7280;">Customer Protection Services</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Critical Analysis Section -->
+        <div class="anatomy-steps">
+            <div class="step-card">
+                <h4>🚩 CRITICAL Red Flags</h4>
+                <ul style="color: #dc2626; font-weight: 600;">
+                    <li><strong>Fraudulent Domain:</strong> ".org" instead of official ".com"</li>
+                    <li><strong>Generic Greeting:</strong> "Dear PayPal User" (not your name)</li>
+                    <li><strong>False Urgency:</strong> 24-hour deadline threat</li>
+                    <li><strong>Account Suspension Threat:</strong> Creates panic</li>
+                    <li><strong>Vague Activity Claim:</strong> No specific details provided</li>
+                    <li><strong>Suspicious URL:</strong> Third-party hosting domain</li>
+                    <li><strong>Grammar Issues:</strong> Subtle language inconsistencies</li>
+                </ul>
+            </div>
+            
+            <div class="step-card">
+                <h4>🎯 Psychological Manipulation</h4>
+                <ul style="color: #dc2626; font-weight: 600;">
+                    <li><strong>Fear of Loss:</strong> Account limitation threat</li>
+                    <li><strong>Time Pressure:</strong> 24-hour countdown</li>
+                    <li><strong>Authority Appeal:</strong> "Security Team" branding</li>
+                    <li><strong>False Legitimacy:</strong> Official-looking design</li>
+                    <li><strong>Consequences Threat:</strong> Permanent suspension</li>
+                    <li><strong>Urgency Language:</strong> "Immediate action required"</li>
+                </ul>
+            </div>
+            
+            <div class="step-card">
+                <h4>✅ How to Verify Legitimacy</h4>
+                <ul style="color: #059669; font-weight: 600;">
+                    <li><strong>Check Domain:</strong> Real PayPal uses @paypal.com only</li>
+                    <li><strong>Log In Directly:</strong> Go to paypal.com manually</li>
+                    <li><strong>Check Account Status:</strong> View notifications in your account</li>
+                    <li><strong>Contact Support:</strong> Use official PayPal support channels</li>
+                    <li><strong>Verify Sender:</strong> Real emails show your name</li>
+                    <li><strong>Hover Over Links:</strong> Check URL destinations</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Cross-Browser Compatible Warning Box -->
+        <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border: 3px solid #dc2626; border-radius: 15px; padding: 25px; margin: 30px auto; max-width: 90%; box-shadow: 0 15px 35px rgba(220, 38, 38, 0.3);">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                <div style="font-size: 2.5em;">🚨</div>
+                <h3 style="margin: 0; color: #991b1b; font-size: 1.4em;">NEVER Click Suspicious Links!</h3>
+            </div>
+            <div style="background: #ffffff; padding: 20px; border-radius: 10px; border: 2px solid #dc2626;">
+                <p style="margin: 0 0 15px 0; color: #1f2937; font-weight: 600; font-size: 1.1em;">
+                    <strong>Real PayPal Communications:</strong>
+                </p>
+                <ul style="color: #374151; margin: 0; padding-left: 20px;">
+                    <li>Always come from @paypal.com email addresses</li>
+                    <li>Address you by your actual name (never "Dear User")</li>
+                    <li>Never ask you to click links to verify accounts</li>
+                    <li>Provide specific transaction details when relevant</li>
+                    <li>Never threaten immediate account closure</li>
+                </ul>
+            </div>
         </div>
     </div>
 
