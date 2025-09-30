@@ -53,14 +53,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             position: relative;
-            /* 80% Display Ratio for Optimal Viewing */
-            zoom: 0.8;
-            -moz-transform: scale(0.8);
-            -moz-transform-origin: 0 0;
-            -webkit-transform: scale(0.8);
-            -webkit-transform-origin: 0 0;
-            transform: scale(0.8);
-            transform-origin: 0 0;
+            animation: fadeIn 1s ease-out;
         }
         }
 
@@ -89,17 +82,18 @@
             text-align: center;
             position: relative;
             opacity: 0;
-            transform: translateY(30px) scale(0.98);
+            transform: translateY(30px);
             transition: var(--transition);
             overflow-y: auto;
             box-sizing: border-box;
             z-index: 1;
+            background: transparent;
         }
 
         .slide.active {
             display: flex;
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
             animation: slideEnter 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
 
@@ -760,55 +754,68 @@
             transform: translateY(-3px);
         }
 
-        /* Responsive Display Optimization for 80% Zoom */
-        html {
-            zoom: 0.8;
-            -moz-transform: scale(0.8);
-            -moz-transform-origin: 0 0;
-            -webkit-transform: scale(0.8);
-            -webkit-transform-origin: 0 0;
-            transform: scale(0.8);
-            transform-origin: 0 0;
+        /* Dynamic Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Ensure slides scale properly */
-        .slide {
-            min-height: 125vh; /* Compensate for 80% zoom */
-            overflow-y: auto;
-            box-sizing: border-box;
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Enhanced visibility for slide content */
-        .slide h1, .slide h2, .slide h3 {
-            font-size: calc(1em * 1.25); /* Increase font size to compensate for zoom */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
-        /* Better visibility for mockups and important content */
-        .email-mockup, .social-media-post, .info-box, .warning-box, 
-        .anatomy-steps, .step-card, [style*="background"], [style*="border"] {
-            transform: none !important; /* Prevent double scaling */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
-        /* Cross-browser compatibility for zoom */
-        @supports not (zoom: 0.8) {
-            body {
-                -moz-transform: scale(0.8);
-                -moz-transform-origin: 0 0;
-                -webkit-transform: scale(0.8);
-                -webkit-transform-origin: 0 0;
-                transform: scale(0.8);
-                transform-origin: 0 0;
-                width: 125vw;
-                height: 125vh;
+        /* Enhanced slide animations */
+        .slide.active {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .slide h1, .slide h2 {
+            animation: slideInUp 0.8s ease-out 0.2s both;
+        }
+
+        .slide .info-box, .slide .warning-box, .slide .step-card {
+            animation: slideInUp 0.8s ease-out 0.4s both;
+        }
+
+        /* Dynamic hover effects */
+        .step-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .info-box:hover {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive design for proper sizing */
+        @media (max-width: 1200px) {
+            .slide {
+                padding: clamp(15px, 3vh, 40px) clamp(15px, 4vw, 60px);
+            }
+            
+            .slide h1 {
+                font-size: clamp(2rem, 5vw, 3.5rem);
+            }
+            
+            .slide h2 {
+                font-size: clamp(1.5rem, 4vw, 2.5rem);
             }
         }
 
-        /* Firefox specific scaling */
-        @-moz-document url-prefix() {
-            body {
-                zoom: normal;
-                -moz-transform: scale(0.8);
-                -moz-transform-origin: 0 0;
+        @media (min-width: 1201px) {
+            .slide {
+                padding: clamp(30px, 5vh, 80px) clamp(30px, 6vw, 100px);
             }
         }
     </style>
@@ -3072,9 +3079,130 @@
             }
         });
 
+        // Add dynamic slide progress indicator
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            let progressBar = document.querySelector('.progress-bar');
+            if (!progressBar) {
+                progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+                progressBar.style.cssText = `
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    height: 4px;
+                    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+                    transition: width 0.3s ease;
+                    z-index: 1000;
+                    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+                `;
+                document.body.appendChild(progressBar);
+            }
+            progressBar.style.width = progress + '%';
+        }
+
+        // Add slide counter
+        function updateSlideCounter() {
+            let counter = document.querySelector('.slide-counter');
+            if (!counter) {
+                counter = document.createElement('div');
+                counter.className = 'slide-counter';
+                counter.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: rgba(0, 0, 0, 0.7);
+                    color: white;
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    z-index: 1000;
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                `;
+                document.body.appendChild(counter);
+            }
+            counter.textContent = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        // Add keyboard shortcuts display
+        function addKeyboardShortcuts() {
+            const shortcuts = document.createElement('div');
+            shortcuts.className = 'keyboard-shortcuts';
+            shortcuts.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                padding: 10px 15px;
+                border-radius: 10px;
+                font-size: 12px;
+                z-index: 1000;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                opacity: 0.7;
+                transition: opacity 0.3s ease;
+            `;
+            shortcuts.innerHTML = `
+                <div style="margin-bottom: 5px;"><kbd>→</kbd> Next</div>
+                <div style="margin-bottom: 5px;"><kbd>←</kbd> Previous</div>
+                <div><kbd>F11</kbd> Fullscreen</div>
+            `;
+            shortcuts.addEventListener('mouseenter', () => shortcuts.style.opacity = '1');
+            shortcuts.addEventListener('mouseleave', () => shortcuts.style.opacity = '0.7');
+            document.body.appendChild(shortcuts);
+        }
+
+        // Enhanced slide navigation with dynamic updates
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                    // Add stagger animation to slide elements
+                    const elements = slide.querySelectorAll('h1, h2, h3, .info-box, .warning-box, .step-card, .anatomy-steps > *');
+                    elements.forEach((el, idx) => {
+                        el.style.animationDelay = `${0.1 * idx}s`;
+                        el.style.animation = 'slideInUp 0.8s ease-out forwards';
+                    });
+                }
+            });
+            currentSlide = index;
+            updateProgress();
+            updateSlideCounter();
+        }
+
         // Initialize first slide
         document.addEventListener('DOMContentLoaded', function() {
             showSlide(0);
+            updateProgress();
+            updateSlideCounter();
+            addKeyboardShortcuts();
+            
+            // Add dynamic background animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes backgroundFloat {
+                    0%, 100% { transform: translateY(0px) rotate(0deg); }
+                    33% { transform: translateY(-20px) rotate(1deg); }
+                    66% { transform: translateY(10px) rotate(-1deg); }
+                }
+                
+                body::before {
+                    animation: backgroundFloat 20s ease-in-out infinite;
+                }
+                
+                kbd {
+                    background: rgba(255, 255, 255, 0.2);
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    font-family: monospace;
+                    font-size: 11px;
+                }
+            `;
+            document.head.appendChild(style);
         });
     </script>
 </body>
