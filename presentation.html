@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anatomy of Phishing Attacks - Cybersecurity Awareness Month</title>
+    <title>Anatomy of Phishing Attacks - Cybersecurity Awareness Month (PowerPoint View)</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Calibri:wght@300;400;500;600;700&family=Segoe+UI:wght@300;400;500;600;700&display=swap');
         
         :root {
-            --primary-bg: linear-gradient(135deg, #0a0e27 0%, #1a1d3a 35%, #2d1b69 100%);
-            --accent-primary: #00d4ff;
-            --accent-secondary: #ff6b35;
-            --accent-warning: #ff4757;
-            --accent-success: #5c7cfa;
-            --text-primary: #ffffff;
-            --text-secondary: #e2e8f0;
-            --text-muted: #94a3b8;
-            --surface-1: rgba(255, 255, 255, 0.03);
-            --surface-2: rgba(255, 255, 255, 0.08);
-            --surface-3: rgba(255, 255, 255, 0.12);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
-            --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.35);
-            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.5);
-            --border-radius: 16px;
-            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            --primary-bg: #f8fafc;
+            --slide-bg: #ffffff;
+            --accent-primary: #2563eb;
+            --accent-secondary: #dc2626;
+            --accent-warning: #f59e0b;
+            --accent-success: #16a34a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
         }
 
         * {
@@ -41,7 +40,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            font-family: 'Segoe UI', 'Calibri', 'Helvetica Neue', Arial, sans-serif;
             background: var(--primary-bg);
             color: var(--text-primary);
             overflow: hidden;
@@ -50,12 +49,11 @@
             width: 100vw;
             height: 100vh;
             font-weight: 400;
-            line-height: 1.5;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             position: relative;
             font-size: 18px;
-        }
         }
 
         body::before {
@@ -65,9 +63,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 40% 40%, rgba(92, 124, 250, 0.05) 0%, transparent 50%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             pointer-events: none;
             z-index: 0;
         }
@@ -75,75 +71,44 @@
         .slide {
             display: none;
             padding: 60px 80px;
-            width: 100vw;
-            height: 100vh;
-            min-height: 100vh;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            width: 90vw;
+            height: 90vh;
+            margin: 5vh auto;
+            background: var(--slide-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--border-color);
             position: relative;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(10px);
             transition: var(--transition);
             overflow-y: auto;
             box-sizing: border-box;
             z-index: 1;
-            background: transparent;
-            max-width: 100vw;
         }
 
         .slide.active {
-            display: flex;
+            display: block;
             opacity: 1;
             transform: translateY(0);
-            animation: slideEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: slideEnter 0.4s ease-out forwards;
         }
 
         @keyframes slideEnter {
             0% {
                 opacity: 0;
-                transform: translateY(40px) scale(0.95);
-                filter: blur(10px);
+                transform: translateY(10px);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
+                transform: translateY(0);
             }
         }
 
         .slide h1 {
-            font-size: clamp(3.8rem, 7vw, 5.5rem);
-            font-weight: 800;
-            margin-bottom: 60px;
-            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
-            text-align: center;
-            margin-top: 0;
-        }
-
-        .slide h1::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 2px;
-            opacity: 0.8;
-        }
-
-        .slide h2 {
-            font-size: clamp(2.8rem, 5vw, 4rem);
-            font-weight: 700;
-            margin-bottom: 50px;
+            font-size: 3.2em;
+            font-weight: 600;
+            margin-bottom: 30px;
             color: var(--text-primary);
             letter-spacing: -0.01em;
             line-height: 1.2;
@@ -151,8 +116,19 @@
             margin-top: 0;
         }
 
+        .slide h2 {
+            font-size: 2.4em;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: var(--text-secondary);
+            letter-spacing: -0.01em;
+            line-height: 1.3;
+            text-align: center;
+            margin-top: 0;
+        }
+
         .slide h3 {
-            font-size: clamp(1.4rem, 3vw, 2.2rem);
+            font-size: 1.6em;
             font-weight: 600;
             margin-bottom: clamp(12px, 2vh, 24px);
             color: var(--accent-primary);
@@ -161,100 +137,72 @@
         }
 
         .slide h4 {
-            font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .slide h4 {
+            font-size: 1.3em;
             font-weight: 600;
-            margin-bottom: clamp(8px, 1.5vh, 16px);
-            color: var(--accent-secondary);
+            margin-bottom: 15px;
+            color: var(--accent-primary);
             letter-spacing: 0;
             line-height: 1.4;
         }
 
         .slide p, .slide li {
-            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-size: 1.1em;
             font-weight: 400;
             line-height: 1.6;
-            margin-bottom: clamp(8px, 1.5vh, 16px);
-            max-width: min(90vw, 1000px);
+            margin-bottom: 16px;
             color: var(--text-secondary);
             letter-spacing: 0.01em;
         }
 
         .slide ul {
             text-align: left;
-            max-width: min(85vw, 900px);
-            margin: clamp(16px, 3vh, 32px) auto;
+            margin: 20px 0;
+            padding-left: 0;
         }
 
         .slide li {
-            margin-bottom: clamp(6px, 1.2vh, 12px);
-            padding-left: 40px;
+            margin-bottom: 12px;
+            padding-left: 25px;
             position: relative;
             transition: var(--transition);
         }
 
         .slide li::before {
-            content: '';
+            content: '•';
             position: absolute;
             left: 0;
-            top: 0.6em;
-            width: 6px;
-            height: 6px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
-        }
-
-        .slide li:hover {
-            color: var(--text-primary);
-            transform: translateX(8px);
-        }
-
-        .slide li:hover::before {
-            background: var(--accent-secondary);
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
-            transform: scale(1.5);
+            color: var(--accent-primary);
+            font-weight: bold;
         }
 
         .warning-box {
-            background: linear-gradient(135deg, rgba(255, 71, 87, 0.1) 0%, rgba(255, 71, 87, 0.05) 100%);
-            border: 2px solid rgba(255, 71, 87, 0.3);
+            background: #fef2f2;
+            border: 2px solid var(--accent-secondary);
             border-radius: var(--border-radius);
-            padding: clamp(20px, 3vh, 40px) clamp(24px, 4vw, 48px);
-            margin: clamp(16px, 3vh, 32px) auto;
-            max-width: min(85vw, 900px);
-            width: 100%;
-            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: var(--shadow-sm);
             color: var(--text-primary);
-            backdrop-filter: blur(20px);
             position: relative;
-            overflow: hidden;
-        }
-
-        .warning-box::before {
-            content: '⚠️';
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 1.5rem;
-            opacity: 0.7;
         }
 
         .info-box {
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 212, 255, 0.08) 100%);
-            border: 2px solid rgba(0, 212, 255, 0.4);
+            background: #f0f9ff;
+            border: 2px solid var(--accent-primary);
             border-radius: var(--border-radius);
-            padding: 40px 50px;
-            margin: 40px auto;
-            max-width: min(90vw, 1100px);
-            width: 100%;
-            box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: var(--shadow-sm);
             color: var(--text-primary);
-            backdrop-filter: blur(20px);
             position: relative;
-            overflow: hidden;
-            font-size: 1.2rem;
-            line-height: 1.7;
-            text-align: left;
+            font-size: 1.1em;
+            line-height: 1.6;
         }
 
         .info-box::before {
@@ -459,75 +407,68 @@
 
         .anatomy-steps {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 35px;
-            margin: 50px auto;
-            max-width: min(95vw, 1300px);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
             width: 100%;
-            padding: 0 30px;
         }
 
         .step-card {
-            background: var(--surface-2);
+            background: #ffffff;
             border-radius: var(--border-radius);
-            padding: 35px;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border: 1px solid var(--border-color);
             transition: var(--transition);
-            font-size: 1.1rem;
-            min-height: 220px;
+            font-size: 1em;
+            min-height: 180px;
             color: var(--text-primary);
             position: relative;
-            overflow: hidden;
             text-align: left;
-        }
-
-        .step-card::before {
-            content: attr(data-step);
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 32px;
-            height: 32px;
-            background: var(--accent-primary);
-            color: var(--primary-bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: 700;
+            box-shadow: var(--shadow-sm);
         }
 
         .step-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            background: var(--surface-3);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
-        .step-card h4 {
-            margin-bottom: 16px;
-            padding-right: 50px;
+        .protection-tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+            width: 100%;
         }
 
-        .step-card:hover {
-            border-color: #4ecdc4;
-            transform: translateY(-8px) rotateY(5deg);
-            box-shadow: 0 15px 35px rgba(78, 205, 196, 0.3);
+        .tip-card {
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            min-height: 160px;
+            color: var(--text-primary);
+            text-align: left;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tip-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
         }
 
         .step-number {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
             color: white;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            margin: 0 auto 20px;
-            font-size: 1.2em;
+            margin: 0 auto 15px;
+            font-size: 1.1em;
         }
 
 
@@ -3167,6 +3108,7 @@
             window.location.href = 'index.html';
         }
 
+        // Simple PowerPoint-style navigation
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length;
@@ -3180,6 +3122,9 @@
             
             // Show new slide
             slides[currentSlide].classList.add('active');
+            
+            // Update slide counter
+            updateSlideCounter();
         }
 
         function nextSlide() {
@@ -3190,67 +3135,7 @@
             showSlide(currentSlide - 1);
         }
 
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
-                e.preventDefault();
-                nextSlide();
-            } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
-                e.preventDefault();
-                previousSlide();
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
-                // Exit fullscreen if in fullscreen mode
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                }
-            }
-        });
-
-        // Touch navigation for mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        document.addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        document.addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            const touchDiff = touchStartX - touchEndX;
-            
-            if (Math.abs(touchDiff) > 50) {
-                if (touchDiff > 0) {
-                    nextSlide();
-                } else {
-                    previousSlide();
-                }
-            }
-        });
-
-        // Add dynamic slide progress indicator
-        function updateProgress() {
-            const progress = ((currentSlide + 1) / slides.length) * 100;
-            let progressBar = document.querySelector('.progress-bar');
-            if (!progressBar) {
-                progressBar = document.createElement('div');
-                progressBar.className = 'progress-bar';
-                progressBar.style.cssText = `
-                    position: fixed;
-                    bottom: 0;
-                    left: 0;
-                    height: 4px;
-                    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-                    transition: width 0.3s ease;
-                    z-index: 1000;
-                    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-                `;
-                document.body.appendChild(progressBar);
-            }
-            progressBar.style.width = progress + '%';
-        }
-
-        // Add slide counter
+        // Clean slide counter
         function updateSlideCounter() {
             let counter = document.querySelector('.slide-counter');
             if (!counter) {
@@ -3260,111 +3145,39 @@
                     position: fixed;
                     bottom: 20px;
                     right: 20px;
-                    background: rgba(0, 0, 0, 0.7);
+                    background: rgba(0, 0, 0, 0.6);
                     color: white;
                     padding: 8px 16px;
                     border-radius: 20px;
                     font-size: 14px;
-                    font-weight: 600;
+                    font-weight: 500;
                     z-index: 1000;
-                    backdrop-filter: blur(10px);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
                 `;
                 document.body.appendChild(counter);
             }
             counter.textContent = `${currentSlide + 1} / ${slides.length}`;
         }
 
-        // Add keyboard shortcuts display
-        function addKeyboardShortcuts() {
-            const shortcuts = document.createElement('div');
-            shortcuts.className = 'keyboard-shortcuts';
-            shortcuts.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                background: rgba(0, 0, 0, 0.7);
-                color: white;
-                padding: 10px 15px;
-                border-radius: 10px;
-                font-size: 12px;
-                z-index: 1000;
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                opacity: 0.7;
-                transition: opacity 0.3s ease;
-            `;
-            shortcuts.innerHTML = `
-                <div style="margin-bottom: 5px;"><kbd>→</kbd> Next</div>
-                <div style="margin-bottom: 5px;"><kbd>←</kbd> Previous</div>
-                <div><kbd>F11</kbd> Fullscreen</div>
-            `;
-            shortcuts.addEventListener('mouseenter', () => shortcuts.style.opacity = '1');
-            shortcuts.addEventListener('mouseleave', () => shortcuts.style.opacity = '0.7');
-            document.body.appendChild(shortcuts);
-        }
-
-        // Enhanced slide navigation with better presentation view
-        function showSlide(index) {
-            // Smooth fade out current slide
-            slides.forEach((slide, i) => {
-                slide.classList.remove('active');
-                slide.style.transform = 'translateY(20px)';
-                slide.style.opacity = '0';
-            });
-            
-            // Delay and show new slide with enhanced animation
-            setTimeout(() => {
-                if (index >= 0 && index < slides.length) {
-                    const currentSlide = slides[index];
-                    currentSlide.classList.add('active');
-                    currentSlide.style.transform = 'translateY(0)';
-                    currentSlide.style.opacity = '1';
-                    
-                    // Enhanced stagger animation for slide elements
-                    const elements = currentSlide.querySelectorAll('h1, h2, h3, .info-box, .warning-box, .step-card, .anatomy-steps > *, p, ul, li');
-                    elements.forEach((el, idx) => {
-                        el.style.opacity = '0';
-                        el.style.transform = 'translateY(30px)';
-                        el.style.animation = `slideInUp 0.8s ease-out ${0.1 * idx + 0.2}s forwards`;
-                    });
-                }
-            }, 200);
-            
-            currentSlide = index;
-            updateProgress();
-            updateSlideCounter();
-        }
+        // Keyboard navigation only
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
 
         // Initialize first slide
         document.addEventListener('DOMContentLoaded', function() {
             showSlide(0);
-            updateProgress();
-            updateSlideCounter();
-            addKeyboardShortcuts();
-            
-            // Add dynamic background animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes backgroundFloat {
-                    0%, 100% { transform: translateY(0px) rotate(0deg); }
-                    33% { transform: translateY(-20px) rotate(1deg); }
-                    66% { transform: translateY(10px) rotate(-1deg); }
-                }
-                
-                body::before {
-                    animation: backgroundFloat 20s ease-in-out infinite;
-                }
-                
-                kbd {
-                    background: rgba(255, 255, 255, 0.2);
-                    padding: 2px 6px;
-                    border-radius: 4px;
-                    font-family: monospace;
-                    font-size: 11px;
-                }
-            `;
-            document.head.appendChild(style);
         });
     </script>
 </body>
